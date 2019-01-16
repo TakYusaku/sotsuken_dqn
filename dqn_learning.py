@@ -85,6 +85,11 @@ if __name__ == '__main__':
     init_er_memory = 5000 * 40
     fl_memory = 40
     info_dqn = [image_row,image_column,channels,batch_size,action_d,info[3],info[4]]
+    total_no_counts = []
+    no_counts_one = []
+    no_counts_two = []
+    no_counts_three = []
+    no_counts_four = []
 
 ### -------- init DQN player 1 --------
     main_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
@@ -150,11 +155,27 @@ if __name__ == '__main__':
                 slp = 0
                 slp_win1 = 0
                 slp_win2 = 0
+                no_one = 0
+                no_two = 0
+                no_three = 0
+                no_four = 0
 
             if slp == 100:
                 ### nnを保存する
+                no_counts_one.append(no_one)
+                no_counts_two.append(no_two)
+                no_counts_three.append(no_three)
+                no_counts_four.append(no_four)
                 wins = [slp_win1,slp_win2,slp_win1/100,slp_win2/100]
                 ts.Log(fm,'slp',wins,episode-100+1)
+                main_n_1.plot_history(fm,episode+1,'main_n1')
+                main_n_2.plot_history(fm,episode+1,'main_n2')
+                target_n_1.plot_history(fm,episode+1,'target_n1')
+                target_n_2.plot_history(fm,episode+1,'target_n2')
+                main_n_1.save_weight(fm,episode+1,'main_n1')
+                main_n_2.save_weight(fm,episode+1,'main_n2')
+                target_n_1.save_weight(fm,episode+1,'target_n1')
+                target_n_2.save_weight(fm,episode+1,'target_n2')
                 selfplay = False
                 slp = 0
                 slp_win1 = 0
@@ -322,6 +343,17 @@ if __name__ == '__main__':
                 action_f = [action_1,action_2]
                 action_e = [action_3,action_4]
 
+                if selfplay:
+                    if on_1 == 'NO':
+                        no_one += 1
+                    if on_2 == 'NO':
+                        no_two += 1
+                    if on_3 == 'NO':
+                        no_three += 1
+                    if on_4 == 'NO':
+                        no_four += 1
+
+
                 # 報酬を取得
                 reward_1 = env.reward_dqn(on_1,p_pnt,POINTFIELD,next_observation_f[0],observation[0][0])
                 reward_2 = env.reward_dqn(on_2,p_pnt,POINTFIELD,next_observation_f[1],observation[0][1])
@@ -427,14 +459,6 @@ if __name__ == '__main__':
             ts.Log(fm,"now learning",info_epoch,episode+1)
             result = [s,s_avg,save_1,save_2]
             ts.saveImage(fm,result,episode+1)
-            main_n_1.plot_history(fm,episode+1,'main_n1')
-            main_n_2.plot_history(fm,episode+1,'main_n2')
-            target_n_1.plot_history(fm,episode+1,'target_n1')
-            target_n_2.plot_history(fm,episode+1,'target_n2')
-            main_n_1.save_weight(fm,episode+1,'main_n1')
-            main_n_2.save_weight(fm,episode+1,'main_n2')
-            target_n_1.save_weight(fm,episode+1,'target_n1')
-            target_n_2.save_weight(fm,episode+1,'target_n2')
 
         # 学習終了後の後処理
         le_delta,fs,now = ts.getTime("timestamp_on",le_start) # 総実行時間の記録
@@ -463,6 +487,11 @@ if __name__ == '__main__':
         main_n_2.save_history(fm,num_episode,'main_n2')
         target_n_1.save_history(fm,num_episode,'target_n1')
         target_n_2.save_history(fm,num_episode,'target_n2')
+        total_no_counts.append(no_counts_one)
+        total_no_counts.append(no_counts_two)
+        total_no_counts.append(no_counts_three)
+        total_no_counts.append(no_counts_four)
+        ts.saveImage_nocounts(fm,total_no_counts,num_episode)
 
 
     except:
@@ -499,3 +528,8 @@ if __name__ == '__main__':
         main_n_2.save_history(fm,kari_epi,'main_n2')
         target_n_1.save_history(fm,kari_epi,'target_n1')
         target_n_2.save_history(fm,kari_epi,'target_n2')
+        total_no_counts.append(no_counts_one)
+        total_no_counts.append(no_counts_two)
+        total_no_counts.append(no_counts_three)
+        total_no_counts.append(no_counts_four)
+        ts.saveImage_nocounts(fm,total_no_counts,kari_epi)

@@ -45,6 +45,8 @@ def init_func(fm):
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/model_loss_and_accuracy'
     os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/no_counts'
+    os.mkdir(mkdi)
     """
     mkdi = './log/' + fm + '/im_field'
     os.mkdir(mkdi)
@@ -346,6 +348,21 @@ def saveImage(fm,result,episode):
     plt.savefig(fn4)
     plt.close()
 
+def saveImage_nocounts(fm,nocounts,episode):
+    fn = './log/' + fm + '/images/no_counts/' + str(episode) + '_nocounts.png'
+    plt.figure()
+    plt.plot(nocounts[0], 'r', label="agent1")
+    plt.plot(nocounts[1], 'b', label="agent2")
+    plt.plot(nocounts[2], 'g', label="agent3")
+    plt.plot(nocounts[3], 'm', label="agent4")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(nocounts[1]),min(nocounts[0]),min(min(nocounts[2]),min(nocounts[3]))-50, max(max(nocounts[3]),max(nocounts[2]),max(nocounts[1]),max(nocounts[0]))+50))
+    plt.xlabel("epoch")
+    plt.ylabel("number of 'NO' counts")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    plt.savefig(fn)
+    plt.close()
 """
 def notify(num_episode,Win1,Win2,s3,s6):#,s3,s4,s5,s6):
     #table = Texttable()

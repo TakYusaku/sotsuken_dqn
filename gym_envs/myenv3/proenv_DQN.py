@@ -408,20 +408,32 @@ class procon18Env_DQN(gym.Env): #define environment
         return action,direc
 
     @retry(delay=1, backoff=1)
-    def step_dqn(self,action): # processing of 1step (rv is observation,reward,done,info)
+    def step_dqn(self,action,FoE): # processing of 1step (rv is observation,reward,done,info)
         observation = []
         #rewards = []
         #pnt = self.pointcalc()
-        for i in range(2):
-            if action[i][0] == "mv":
-                self.Move(i+1,action[i][1])
-            elif action[i][0] == "rm":
-                self.Remove(i+1,action[i][1])
-            elif action[i][0] == "st":
-                self.Move(i+1,4)
-            #reward = self.reward_dqn(action[i][2],pnt)
-            #rewards.append(reward)
-        observation = [self.getPosition(1),self.getPosition(2)] # [y,x],[y,x]
+        if FoE: # Enemy is 1
+            for i in range(2):
+                if action[i][0] == "mv":
+                    self.Move(i+3,action[i][1])
+                elif action[i][0] == "rm":
+                    self.Remove(i+3,action[i][1])
+                elif action[i][0] == "st":
+                    self.Move(i+3,4)
+                #reward = self.reward_dqn(action[i][2],pnt)
+                #rewards.append(reward)
+            observation = [self.getPosition(3),self.getPosition(4)] # [y,x],[y,x]
+        else: # Friends is 0
+            for i in range(2):
+                if action[i][0] == "mv":
+                    self.Move(i+1,action[i][1])
+                elif action[i][0] == "rm":
+                    self.Remove(i+1,action[i][1])
+                elif action[i][0] == "st":
+                    self.Move(i+1,4)
+                #reward = self.reward_dqn(action[i][2],pnt)
+                #rewards.append(reward)
+            observation = [self.getPosition(1),self.getPosition(2)] # [y,x],[y,x]
 
         #self.done = self._is_done()
         return observation#, rewards#, self.done
