@@ -28,7 +28,7 @@ RUN pip install pydot
 RUN pip3 install tensorflow-gpu keras
 RUN pip3 install pydotplus && pip3 install graphviz
 RUN pip3 install gym && pip3 install matplotlib && pip3 install && pip3 install retry
-RUN cd home && git clone https://github.com/TakYusaku/sotsuken_nn.git && cd sotsuken_nn/gym_myenvs/myenv3/ && mkdir /usr/local/lib/python3.6/dist-packages/gym/envs/myenv3 && cp -rp * /usr/local/lib/python3.6/dist-packages/gym/envs/myenv3 && cd ../ && cp __init__.py /usr/local/lib/python3.6/dist-packages/gym/envs/
+RUN cd home && git clone https://github.com/TakYusaku/sotsuken_dqn.git && cd sotsuken_dqn/gym_myenvs/myenv3/ && mkdir /usr/local/lib/python3.6/dist-packages/gym/envs/myenv3 && cp -rp * /usr/local/lib/python3.6/dist-packages/gym/envs/myenv3 && cd ../ && cp __init__.py /usr/local/lib/python3.6/dist-packages/gym/envs/
 RUN echo "successful!"
 
 CMD echo 'Hello docker of sotsuken world!'
