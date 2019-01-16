@@ -1,0 +1,1 @@
+32,64,3,2,128,17,relu,relu,relu,softmax,mean_squared_error,adam

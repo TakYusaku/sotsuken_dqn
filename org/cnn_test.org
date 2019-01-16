@@ -1,0 +1,110 @@
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
+# Last Update is 01/07 01:00
+from keras.models import Sequential
+from keras.layers.core import Dense, Activation, Flatten, Dropout
+from keras.layers import Conv2D, MaxPooling2D
+from keras import backend as K
+from keras.utils import plot_model
+# pip3 install pydotplus and pip3 install graphviz and brew install graphviz and pip install pydot
+import pydotplus
+import numpy as np
+
+class DQN:
+    def __init__(self,type,palam,Conv_layer):
+        if type == "CNN":
+            self.init_CNN(palam,Conv_layer)
+        elif type == "DL":
+            self.init_DL(palam,Conv_layer)
+
+    def init_CNN(self,palam,Conv_layer):
+        # palam -> [filter[len:3], conv_size(:tuple),activation_func[len:5],pool_size(:tuple),input_shape,num_dence, num_action, loss function, optimizer]
+        # def model
+        self.model = Sequential()
+        # convolution _1
+        self.model.add(Conv2D(palam[0][0], tuple(palam[1]), data_format='channels_last', activation=palam[2][0], input_shape=tuple(palam[4]))) # batch_size = 10,
+        # max pooling _1
+        self.model.add(MaxPooling2D(pool_size=(2,2)))#tuple(palam[3])))
+        # convolution _2
+        self.model.add(Conv2D(palam[0][1], tuple(palam[1]), activation=palam[2][1]))
+        # max pooling _2 必要ない-> プーリングが必要ないほどConv_2で小さくなっている
+        #self.model.add(MaxPooling2D(pool_size=tuple(palam[3])))
+        if Conv_layer == 3:
+            # convolution _3
+            self.model.add(Conv2D(palam[0][2], tuple(palam[1]), activation=palam[2][2]))
+            # max pooling _3
+            self.model.add(MaxPooling2D(pool_size=tuple(palam[3])))
+        self.model.add(Flatten())
+        # 全結合層1
+        self.model.add(Dense(palam[5]))
+        self.model.add(Activation(palam[2][3]))
+        # 全結合層2
+        self.model.add(Dense(palam[6])) # num_category
+        self.model.add(Activation(palam[2][4]))
+
+        ## モデルコンパイル(損失関数，最適化アルゴリズム，等の設定)
+        self.model.compile(loss=palam[7], optimizer=palam[8], metrics=['accuracy'])
+
+        # show model
+        self.model.summary()
+        # save model image
+        plot_model(self.model, to_file='model.png')
+
+    def fitting(self, D, batch_size, gamma, targetQN):
+        inputs = np.zeros((batch_size * 11, 8))
+        targets = np.zeros((batch_size, 17))
+        mini_batch = D.sample(batch_size)
+
+        for i, (state_b, action_b, reward_b, next_state_b) in enumerate(mini_batch):
+            inputs[i*11:(i+1)*11] = state_b
+            target = reward_b
+
+            # 価値計算
+            if not (next_state_b == np.zeros(state_b.shape)).all(axis=1): # next_state が 0 でない
+                # 行動決定のQネットワークと価値観数のQネットワークは分離
+                retmainQs = self.model.predict(next_state_b)[0] # next state に対するpredict
+                next_action = np.argmax(retmainQs)  # 最大の報酬を返す行動を選択する
+                target = reward_b + gamma * targetQN.model.predict(next_state_b)[0][next_action]
+
+            targets[i] = self.model.predict(state_b)    # Qネットワークの出力
+            targets[i][action_b] = target               # 教師信号
+
+        self.result = self.model.fit(inputs, targets, epochs=1, verbose=0, batch_size=batch_size, validation_split=0.1)
+        self.history = self.result.history
+        return self.result
+    
+    def loadWeight(self, fn):
+        self.model.load_weights(fn)
+
+    def saveWeight(self, fn):
+        self.model.save_weights(fn, True)
+
+    def loadHistory(self, fn):
+        with open(fn, mode='rb') as f:
+            self.history = pickle.load(f)
+
+    def saveHistory(self, fn):
+        with open(fn, mode='wb') as f:
+            pickle.dump(self.history, f)
+
+class Memory:
+    def __init__(self, max_size=1000):
+        self.buffer = deque(maxlen=max_size)
+
+    def add(self, experience):
+        self.buffer.append(experience)
+
+    def sample(self, batch_size):
+        samp = np.random.choice(np.arange(len(self.buffer)), size=batch_size, replace=False)
+        return [self.buffer[i] for i in samp]
+
+    def len(self):
+        return len(self.buffer)
+
+if __name__ == "__main__":
+    palam = [[32,64,None],[3,3],['relu','relu','relu','relu','softmax'],[2,2],[11,8,1],128,18,'mean_squared_error','adam']
+    print(tuple(palam[4]))
+    dnn = DQN("CNN",palam,2)
+    batch_size = 5
+    inputs = np.zeros((batch_size * 11, 8))
+    print(inputs)

@@ -1,0 +1,6 @@
+# li.csv
+portnum,epoch,input_image_channels,input_image_num,vector_dim,batch_size_of_input_images,dense_num,output_num,enemy_is_QL(0)orMCM(1)
+# cnn_input_1.csv | これはtwo以降も構成は同じ
+conv2D_1_num,conv2D_2_num,pooling_1_filter,pooling_2_filter,dense_num,output_num,activation_func1,activation_func2,activation_func3,activation_func4,activation_func5,lossfunc_type,optimizer_type
+# nn_input.csv
+dense1,dense2,dense3,activation_func1,activation_func2,activation_func3
