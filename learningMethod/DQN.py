@@ -188,6 +188,7 @@ class DQN:
 
         for i, (state_b, action_b, reward_b, next_state_b) in enumerate(mini_batch):
             print(np.array(state_b[0]).shape)
+            print(np.array(next_state_b[0]))
             inputs[i:i+1] = np.array(state_b[0])
             inputs2[i:i+1] = np.array(state_b[1])
             target = reward_b[0]
