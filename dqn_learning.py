@@ -108,7 +108,7 @@ if __name__ == '__main__':
     actor_2 = dqn.Actor(120000,500)
 
     try:
-        for episode in range(1):#num_episode):
+        for episode in range(num_episode):
             # now epoch　の記録
             kari_epi += 1
             # 環境のリセット
@@ -185,7 +185,7 @@ if __name__ == '__main__':
                 print("now selfplaying...")
             
             ##### main ruetine #####
-            for i in range(10): #terns):
+            for i in range(terns):
                 env.countStep() # epoch num のカウント
 
                 if not info[4]:
@@ -455,7 +455,7 @@ if __name__ == '__main__':
 
 
         if episode != 0 and episode%250 == 0 and episode!=num_episode-1 : # episode%250 == 0
-            info_epoch = [epi_processtime[episode],float(Win1/episode+1),float(Win2/episode+1),np.argmax(save_1[2]),save_1[2][np.argmax(save_1[2])],np.argmax(save_2[2]),save_2[2][np.argmax(save_2[2])]]
+            info_epoch = [epi_processtime[episode],float(Win1/episode+1),float(Win2/episode+1),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
             ts.Log(fm,"now learning",info_epoch,episode+1)
             result = [s,s_avg,save_1,save_2]
             ts.saveImage(fm,result,episode+1)
@@ -471,7 +471,7 @@ if __name__ == '__main__':
         m = "finished time is " + str(now)
         print(m)
 
-        info_finished = [Win1,Win2,float(Win1/num_episode),float(Win2/num_episode),np.argmax(save_1[2]),save_1[2][np.argmax(save_1[2])],np.argmax(save_2[2]),save_2[2][np.argmax(save_2[2])],fs,le_delta]
+        info_finished = [Win1,Win2,float(Win1/num_episode),float(Win2/num_episode),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))],fs,le_delta]
         ts.Log(fm,"finished",info_finished)
         result = [s,s_avg,save_1,save_2]
         ts.saveImage(fm,result,num_episode)
@@ -498,7 +498,7 @@ if __name__ == '__main__':
 
         m = str(sys.exc_info())
         le_delta,fs,now = ts.getTime("timestamp_on",le_start) # 総実行時間の記録
-        info_error = [Win1,Win2,float(Win1/kari_epi),float(Win2/kari_epi),np.argmax(save_1[2]),save_1[2][np.argmax(save_1[2])],np.argmax(save_2[2]),save_2[2][np.argmax(save_2[2])],fs,le_delta,m]
+        info_error = [Win1,Win2,float(Win1/kari_epi),float(Win2/kari_epi),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))],fs,le_delta,m]
         ts.Log(fm,"error",info_error)
         print(m)
         ###
