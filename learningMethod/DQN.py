@@ -237,7 +237,7 @@ class DQN:
         axL.plot(self.history['loss'],label="loss for training")
         #axL.plot(self.history['val_loss'],label="loss for validation")
         nm1 = 'model loss : ' + name
-        axL.set_title(mn1)
+        axL.set_title(nm1)
         axL.set_xlabel('epoch')
         axL.set_ylabel('loss')
         axL.legend(loc='upper right')
@@ -245,8 +245,8 @@ class DQN:
         ## 学習時の精度
         axR.plot(self.history['acc'],label="accuracy for training")
         #axR.plot(self.history['val_acc'],label="accuracy for validation")
-        mn2 = 'model accuracy : ' + name
-        axR.set_title(mn2)
+        nm2 = 'model accuracy : ' + name
+        axR.set_title(nm2)
         axR.set_xlabel('epoch')
         axR.set_ylabel('accuracy')
         axR.legend(loc='lower right')
