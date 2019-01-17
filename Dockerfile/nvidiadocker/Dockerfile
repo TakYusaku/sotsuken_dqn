@@ -1,4 +1,6 @@
-FROM nvidia/cuda:9.1-cudnn7-devel-ubuntu16.04
+ARG cuda_version=9.0
+ARG cudnn_version=7
+FROM nvidia/cuda:${cuda_version}-cudnn${cudnn_version}-devel-ubuntu16.04
 
 # 学内でbuildするならば，以下のENVをコメントアウト
 ENV http_proxy="http://http-p.srv.cc.suzuka-ct.ac.jp:8080/"
