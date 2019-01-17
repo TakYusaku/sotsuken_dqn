@@ -187,8 +187,6 @@ class DQN:
         mini_batch = D.sample(self.batch_size)
 
         for i, (state_b, action_b, reward_b, next_state_b) in enumerate(mini_batch):
-            print(np.array(state_b[0]).shape)
-            print(np.array(next_state_b[0]).shape)
             inputs[i:i+1] = np.array(state_b[0])
             inputs2[i:i+1] = np.array(state_b[1])
             target = reward_b[0]
@@ -197,13 +195,11 @@ class DQN:
             # 価値計算
             if not (np.array(next_state_b[0]) == np.zeros(np.array(state_b[0]).shape)).all(): # next_state が 0 でない
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
-                print("on1")
                 retmainQs1 = self.model.predict(np.array(next_state_b[0]))[0] # next state に対するpredict
                 next_action1 = np.argmax(retmainQs1)  # 最大の報酬を返す行動を選択する
                 target = reward_b[0] + gamma * targetQN.model.predict(np.array(next_state_b[0]))[0][next_action1]
 
             if not (np.array(next_state_b[1]) == np.zeros(np.array(state_b[1]).shape)).all(): # next_state が 0 でない
-                print("on2")
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
                 retmainQs2 = self.model.predict(np.array(next_state_b[1]))[0] # next state に対するpredict
                 next_action2 = np.argmax(retmainQs2)  # 最大の報酬を返す行動を選択する
