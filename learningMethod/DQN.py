@@ -187,8 +187,8 @@ class DQN:
         mini_batch = D.sample(self.batch_size)
 
         for i, (state_b, action_b, reward_b, next_state_b) in enumerate(mini_batch):
-            inputs[i:i+1] = state_b[0]
-            inputs2[i:i+1] = state_b[1]
+            inputs[i:i+1] = np.array(state_b[0])
+            inputs2[i:i+1] = np.array(state_b[1])
             target = reward_b[0]
             target2 = reward_b[1]
 
@@ -196,20 +196,20 @@ class DQN:
             if not (np.array(next_state_b[0]) == np.zeros(np.array(state_b[0]).shape)).all(): # next_state が 0 でない
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
                 print("on1")
-                retmainQs1 = self.model.predict(next_state_b[0])[0] # next state に対するpredict
+                retmainQs1 = self.model.predict(np.array(next_state_b[0]))[0] # next state に対するpredict
                 next_action1 = np.argmax(retmainQs1)  # 最大の報酬を返す行動を選択する
-                target = reward_b[0] + gamma * targetQN.model.predict(next_state_b[0])[0][next_action1]
+                target = reward_b[0] + gamma * targetQN.model.predict(np.array(next_state_b[0]))[0][next_action1]
 
             if not (np.array(next_state_b[1]) == np.zeros(np.array(state_b[1]).shape)).all(): # next_state が 0 でない
                 print("on2")
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
-                retmainQs2 = self.model.predict(next_state_b[1])[0] # next state に対するpredict
+                retmainQs2 = self.model.predict(np.array(next_state_b[1]))[0] # next state に対するpredict
                 next_action2 = np.argmax(retmainQs2)  # 最大の報酬を返す行動を選択する
-                target2 = reward_b[1] + gamma * targetQN.model.predict(next_state_b[1])[0][next_action2]
+                target2 = reward_b[1] + gamma * targetQN.model.predict(np.array(next_state_b[1]))[0][next_action2]
 
-            targets[i] = self.model.predict(state_b[0])    # Qネットワークの出力
+            targets[i] = self.model.predict(np.array(state_b[0]))    # Qネットワークの出力
             targets[i][action_b[0]] = target               # 教師信号
-            targets2[i] = self.model.predict(state_b[1])    # Qネットワークの出力
+            targets2[i] = self.model.predict(np.array(state_b[1]))   # Qネットワークの出力
             targets2[i][action_b[1]] = target2             # 教師信号
 
         self.result = self.model.fit(inputs, targets, epochs=1, verbose=1, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
