@@ -180,7 +180,7 @@ class DQN:
         plot_model(self.model, to_file=fn, show_shapes=True)
 
     def fitting(self, D, gamma, targetQN):
-        inputs = np.zeros((self.batch_size, self.image_row, self.image_column, self.channels))
+        inputs = np.zeros((self.batch_size, self.channels, self.image_row, self.image_column))
         targets = np.zeros((self.batch_size, self.action_d))
         mini_batch = D.sample(self.batch_size)
 
