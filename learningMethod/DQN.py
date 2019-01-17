@@ -87,7 +87,7 @@ class DQN:
         # show model summary
         self.model.summary()
         # save model image
-        fn = 'model_init_CNN_only_inputnum_' + str(input_num) + '.png'
+        fn = './log/model_init_CNN_only_inputnum_' + str(input_num) + '.png'
         plot_model(self.model, to_file=fn, show_shapes=True)
     
     def init_CNN_and_NN(self,palam,palam_dense,input_num,input_nn_num): # input is images and vector
@@ -176,7 +176,7 @@ class DQN:
         # show model summary
         self.model.summary()
         # save model image
-        fn = 'model_init_CNN_and_NN_inputnum_' + str(input_num) + '_inputnnnum_' +str(input_nn_num) + '.png'
+        fn = './log/model_init_CNN_and_NN_inputnum_' + str(input_num) + '_inputnnnum_' +str(input_nn_num) + '.png'
         plot_model(self.model, to_file=fn, show_shapes=True)
 
     def fitting(self, D, gamma, targetQN):

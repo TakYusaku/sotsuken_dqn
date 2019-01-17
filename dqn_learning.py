@@ -406,8 +406,9 @@ if __name__ == '__main__':
                 rew_2[2] += (reward_3 + reward_4) / 2
                 rew_1[3] += reward_1 + reward_2
                 rew_2[3] += reward_3 + reward_4
-
-            slp += 1
+            
+            if selfplay:
+                slp += 1
 
             epi_time_delta,fs,now = ts.getTime("timestamp_on",epi_starttime) # 1epoch 実行時間
             epi_processtime.append(epi_time_delta) # 実行時間の記録
