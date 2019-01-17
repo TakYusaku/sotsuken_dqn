@@ -112,7 +112,10 @@ if __name__ == '__main__':
             # now epoch　の記録
             kari_epi += 1
             # 環境のリセット
-            observation, terns = env.reset(info[0])
+            if episode == 0:
+                observation, terns = env.reset(info[0])
+            else:
+                observation, terns = env.reset()
             # 1試合の報酬のリセット
             episode_reward_1 = 0
             episode_reward_2 = 0
