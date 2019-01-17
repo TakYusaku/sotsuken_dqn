@@ -1,9 +1,10 @@
-FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu18.04
+#FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
-# 学外でbuildするならば，以下のENVをコメントアウト
-#ENV http_proxy="http://http-p.srv.cc.suzuka-ct.ac.jp:8080/"
-#ENV https_proxy="http://http-p.srv.cc.suzuka-ct.ac.jp:8080/"
-#ENV no_proxy=127.0.0.1,localhost
+# 学内でbuildするならば，以下のENVをコメントアウト
+ENV http_proxy="http://http-p.srv.cc.suzuka-ct.ac.jp:8080/"
+ENV https_proxy="http://http-p.srv.cc.suzuka-ct.ac.jp:8080/"
+ENV no_proxy=127.0.0.1,localhost
 
 ENV DEBIAN_FRONTEND=noninteractive
 
