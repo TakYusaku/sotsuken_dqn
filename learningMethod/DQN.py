@@ -195,23 +195,25 @@ class DQN:
             # 価値計算
             if not (np.array(next_state_b[0]) == np.zeros(np.array(state_b[0]).shape)).all(): # next_state が 0 でない
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
-                retmainQs1 = self.final.predict(next_state_b[0])[0] # next state に対するpredict
+                print("on1")
+                retmainQs1 = self.model.predict(next_state_b[0])[0] # next state に対するpredict
                 next_action1 = np.argmax(retmainQs1)  # 最大の報酬を返す行動を選択する
                 target = reward_b[0] + gamma * targetQN.model.predict(next_state_b[0])[0][next_action1]
 
             if not (np.array(next_state_b[1]) == np.zeros(np.array(state_b[1]).shape)).all(): # next_state が 0 でない
+                print("on2")
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
-                retmainQs2 = self.final.predict(next_state_b[1])[0] # next state に対するpredict
+                retmainQs2 = self.model.predict(next_state_b[1])[0] # next state に対するpredict
                 next_action2 = np.argmax(retmainQs2)  # 最大の報酬を返す行動を選択する
                 target2 = reward_b[1] + gamma * targetQN.model.predict(next_state_b[1])[0][next_action2]
 
-            targets[i] = self.final.predict(state_b[0])    # Qネットワークの出力
+            targets[i] = self.model.predict(state_b[0])    # Qネットワークの出力
             targets[i][action_b[0]] = target               # 教師信号
-            targets2[i] = self.final.predict(state_b[1])    # Qネットワークの出力
+            targets2[i] = self.model.predict(state_b[1])    # Qネットワークの出力
             targets2[i][action_b[1]] = target2             # 教師信号
 
-        self.result = self.final.fit(inputs, targets, epochs=1, verbose=1, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
-        self.result = self.final.fit(inputs2, targets2, epochs=1, verbose=1, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
+        self.result = self.model.fit(inputs, targets, epochs=1, verbose=1, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
+        self.result = self.model.fit(inputs2, targets2, epochs=1, verbose=1, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
         self.history = self.result.history
         return self.result
     
