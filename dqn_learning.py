@@ -405,63 +405,63 @@ if __name__ == '__main__':
                 rew_1[3] += reward_1 + reward_2
                 rew_2[3] += reward_3 + reward_4
 
-        slp += 1
+            slp += 1
 
-        epi_time_delta,fs,now = ts.getTime("timestamp_on",epi_starttime) # 1epoch 実行時間
-        epi_processtime.append(epi_time_delta) # 実行時間の記録
-        # 1 epoch の報酬の記録
-        #save_1 = [save_episodereward1,save_episodereward2,save_avg_totalrewardF,save_sum_totalrewardF, avg_save_episodereward1,avg_save_episodereward2,avg_save_avg_totalrewardF,avg_save_sum_totalrewardF]
-        #save_2 = [save_episodereward1,save_episodereward2,save_avg_totalrewardF,save_sum_totalrewardF, avg_save_episodereward1,avg_save_episodereward2,avg_save_avg_totalrewardF,avg_save_sum_totalrewardF]
-        save_1[0].append(rew_1[0])
-        save_1[1].append(rew_1[1])
-        save_2[0].append(rew_2[0])
-        save_2[1].append(rew_2[1])
-        save_1[2].append(rew_1[2])
-        save_2[2].append(rew_2[2])
-        save_1[3].append(rew_1[3])
-        save_2[3].append(rew_2[3])
+            epi_time_delta,fs,now = ts.getTime("timestamp_on",epi_starttime) # 1epoch 実行時間
+            epi_processtime.append(epi_time_delta) # 実行時間の記録
+            # 1 epoch の報酬の記録
+            #save_1 = [save_episodereward1,save_episodereward2,save_avg_totalrewardF,save_sum_totalrewardF, avg_save_episodereward1,avg_save_episodereward2,avg_save_avg_totalrewardF,avg_save_sum_totalrewardF]
+            #save_2 = [save_episodereward1,save_episodereward2,save_avg_totalrewardF,save_sum_totalrewardF, avg_save_episodereward1,avg_save_episodereward2,avg_save_avg_totalrewardF,avg_save_sum_totalrewardF]
+            save_1[0].append(rew_1[0])
+            save_1[1].append(rew_1[1])
+            save_2[0].append(rew_2[0])
+            save_2[1].append(rew_2[1])
+            save_1[2].append(rew_1[2])
+            save_2[2].append(rew_2[2])
+            save_1[3].append(rew_1[3])
+            save_2[3].append(rew_2[3])
 
-        save_1[4].append(mean(save_1[0]))
-        save_2[4].append(mean(save_2[0]))
-        save_1[5].append(mean(save_1[1]))
-        save_2[5].append(mean(save_2[1]))
-        save_1[6].append(mean(save_1[2]))
-        save_2[6].append(mean(save_2[2]))
-        save_1[7].append(mean(save_1[3]))
-        save_2[7].append(mean(save_2[3]))
+            save_1[4].append(mean(save_1[0]))
+            save_2[4].append(mean(save_2[0]))
+            save_1[5].append(mean(save_1[1]))
+            save_2[5].append(mean(save_2[1]))
+            save_1[6].append(mean(save_1[2]))
+            save_2[6].append(mean(save_2[2]))
+            save_1[7].append(mean(save_1[3]))
+            save_2[7].append(mean(save_2[3]))
 
-        # 1ゲームのポイントの記録
-        s_p = env.calcPoint()
-        s[0].append(s_p[0])
-        s_avg[0].append(mean(s[0]))
-        s[1].append(s_p[1])
-        s_avg[1].append(mean(s[1]))
-        s[2].append(s_p[2])
-        s_avg[2].append(mean(s[2]))
-        s[3].append(s_p[3])
-        s_avg[3].append(mean(s[3]))
-        s[4].append(s_p[4])
-        s_avg[4].append(mean(s[4]))
-        s[5].append(s_p[5])
-        s_avg[5].append(mean(s[5]))
+            # 1ゲームのポイントの記録
+            s_p = env.calcPoint()
+            s[0].append(s_p[0])
+            s_avg[0].append(mean(s[0]))
+            s[1].append(s_p[1])
+            s_avg[1].append(mean(s[1]))
+            s[2].append(s_p[2])
+            s_avg[2].append(mean(s[2]))
+            s[3].append(s_p[3])
+            s_avg[3].append(mean(s[3]))
+            s[4].append(s_p[4])
+            s_avg[4].append(mean(s[4]))
+            s[5].append(s_p[5])
+            s_avg[5].append(mean(s[5]))
 
-        if env.judVoL() == "Win_1":
-            Win1 += 1
-            print('agent1 won')
-            if selfplay:
-                slp_win1 += 1
-        else:
-            Win2 += 1
-            print('agent2 won')
-            if selfplay:
-                slp_win2 += 1
+            if env.judVoL() == "Win_1":
+                Win1 += 1
+                print('agent1 won')
+                if selfplay:
+                    slp_win1 += 1
+            else:
+                Win2 += 1
+                print('agent2 won')
+                if selfplay:
+                    slp_win2 += 1
 
 
-        if episode != 0 and episode%250 == 0 and episode!=num_episode-1 : # episode%250 == 0
-            info_epoch = [epi_processtime[episode],float(Win1/episode+1),float(Win2/episode+1),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
-            ts.Log(fm,"now learning",info_epoch,episode+1)
-            result = [s,s_avg,save_1,save_2]
-            ts.saveImage(fm,result,episode+1)
+            if episode != 0 and episode%250 == 0 and episode!=num_episode-1 : # episode%250 == 0
+                info_epoch = [epi_processtime[episode],float(Win1/episode+1),float(Win2/episode+1),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
+                ts.Log(fm,"now learning",info_epoch,episode+1)
+                result = [s,s_avg,save_1,save_2]
+                ts.saveImage(fm,result,episode+1)
 
         # 学習終了後の後処理
         le_delta,fs,now = ts.getTime("timestamp_on",le_start) # 総実行時間の記録
