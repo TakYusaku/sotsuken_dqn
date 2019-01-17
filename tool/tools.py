@@ -166,12 +166,17 @@ def Log(fm, when,info=None,epoch=None):
         f.write(m1)
         f.close
 
+    elif epoch is None and when is 'slp_f':
+        f.write(info)
+        f.close
+
     elif epoch is None and when is "finished":
         m1 = "successfuly! : runtime is " + str(info[9]) + " \n"
         m2 = "agent1 won : " + str(info[0]) + " , agent2 won : " + str(info[1]) + "/ WPCT of agent1 is " + str(info[2]) + " , agent2 is " + str(info[3]) + " .\n"
-        m3 = "when is the highest reward of agent1, max reward of agent1, when is the highest reward of agent2, max reward of agent2: "
+        m3 = "when is the highest reward of agent1, max reward of agent1, when is the highest reward of agent2, max reward of agent2, tsuyokunatta: "
         for i in range(4,8):
             m3 += str(info[i]) + ', '
+        m3 += str(info[10])
         m3 += '\n'
         m4 = "==================== finished *successfuly* ( finished time : " + info[8] + " ) ==================== \n"
         m = m1 + m2 + m3 + m4
