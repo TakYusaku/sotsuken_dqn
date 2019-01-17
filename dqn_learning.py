@@ -75,6 +75,7 @@ if __name__ == '__main__':
 ### -------- init DQN palam--------
     selfplay = False
     slp = 0
+    cnt = 1
     DQN_mode = 0
     image_row = 11
     image_column = 8
@@ -153,7 +154,7 @@ if __name__ == '__main__':
             state_e = [state[2],state[3]]
 
             # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
-            if ((episode+1)-500-(int(((episode+1)-500)/1000)-1)*100) % 1000 == 0:
+            if (episode+1) == (400+1100*cnt):
                 selfplay = True
                 slp = 0
                 slp_win1 = 0
@@ -161,7 +162,7 @@ if __name__ == '__main__':
                 no_one = 0
                 no_two = 0
                 no_three = 0
-                no_four = 0
+                no_four = 0  
 
             if slp == 100:
                 ### nnを保存する
@@ -183,6 +184,7 @@ if __name__ == '__main__':
                 slp = 0
                 slp_win1 = 0
                 slp_win2 = 0
+                cnt +=1
 
             if selfplay:
                 print("now selfplaying...")
