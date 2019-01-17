@@ -377,8 +377,8 @@ if __name__ == '__main__':
                 next_state,memory_flame1_1,memory_flame1_2 = dqn.getState(env,i+1,POINTFIELD,next_user_field,memory_flame1_1,memory_flame1_2,info[4],next_observation,next_ob_f,next_ob_e)
 
                 # 状態の保存
-                memory_state_1.add((state_f, action_f, reward_f, next_state[0]))
-                memory_state_2.add((state_e, action_e, reward_e, next_state[1]))
+                memory_state_1.add((state_f, action_f, reward_f, [next_state[0],next_state[1]]))
+                memory_state_2.add((state_e, action_e, reward_e, [next_state[2],next_state[3]]))
 
                 if episode+1 > 3:#episode*40 >= 500*40 and not selfplay: ##################### test!!!!!!!!! ####################
                     main_n_1.fitting(memory_state_1, gamma, target_n_1)
