@@ -346,6 +346,7 @@ class procon18Env_DQN(gym.Env): #define environment
             return "lu"
 
 ### ここからDQN
+    @retry(delay=1, backoff=1)
     def getStatus_dqn(self,turn):
         pfield = []
         uf_field = []
@@ -376,6 +377,7 @@ class procon18Env_DQN(gym.Env): #define environment
         a =  np.array([obs1[0]*8 + obs1[1], obs2[0]*8 + obs2[1]])
         return a  # [int, int]
     
+    @retry(delay=1, backoff=1)
     def deciAction(self,usr,ac):
         action,direc = self.getAc_and_Dir(ac)
         data = {
@@ -388,7 +390,6 @@ class procon18Env_DQN(gym.Env): #define environment
         iv_list = [i for i in f.split()]
         il = [int(iv_list[1]),int(iv_list[0])] # [y(row),x(column)]
         return iv_list[2],il,action,direc
-
 
     def getAc_and_Dir(self,ac):
         action = ''

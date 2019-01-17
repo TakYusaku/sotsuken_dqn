@@ -198,7 +198,7 @@ class DQN:
             targets[i] = self.final.predict(state_b)    # Qネットワークの出力
             targets[i][action_b] = target               # 教師信号
 
-        self.result = self.final.fit(inputs, targets, epochs=1, verbose=0, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
+        self.result = self.final.fit(inputs, targets, epochs=1, verbose=1, batch_size=batch_size) # verbose=0 は訓練の様子を表示しない
         self.history = self.result.history
         return self.result
     
