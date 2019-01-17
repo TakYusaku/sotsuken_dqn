@@ -296,9 +296,9 @@ class Actor:
 
     def get_action(self, env, usr, state, mainQN, episode, selfPlay):
         # ε-greedy法
-        epsilon = 1#self.epsilon
+        epsilon = self.epsilon
 
-        if epsilon:#epsilon <= np.random.uniform(0, 1) or selfPlay:
+        if epsilon <= np.random.uniform(0, 1) or selfPlay:
             predict = mainQN.model.predict(state)[0]
             action = np.argmax(predict)  
 
