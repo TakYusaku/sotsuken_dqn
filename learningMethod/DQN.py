@@ -297,11 +297,11 @@ class Actor:
     def get_action(self, env, usr, state, mainQN, episode, selfPlay):
         # ε-greedy法
         epsilon = self.epsilon
+        action = 0
 
         if epsilon <= np.random.uniform(0, 1) or selfPlay:
             predict = mainQN.model.predict(state)[0]
-            action = np.argmax(predict)  
-
+            action = np.argmax(predict)
         elif epsilon > np.random.uniform(0, 1) or episode < self.init_er_size:
             action = np.random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
 

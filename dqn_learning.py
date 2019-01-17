@@ -461,10 +461,11 @@ if __name__ == '__main__':
 
 
             if episode != 0 and episode%250 == 0 and episode!=num_episode-1 : # episode%250 == 0
-                info_epoch = [epi_processtime[episode],float(Win1/episode+1),float(Win2/episode+1),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
+                info_epoch = [epi_processtime[episode],float(Win1/(episode+1)),float(Win2/(episode+1)),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
                 ts.Log(fm,"now learning",info_epoch,episode+1)
                 result = [s,s_avg,save_1,save_2]
                 ts.saveImage(fm,result,episode+1)
+                print("ok")
 
         # 学習終了後の後処理
         le_delta,fs,now = ts.getTime("timestamp_on",le_start) # 総実行時間の記録

@@ -185,8 +185,9 @@ def Log(fm, when,info=None,epoch=None):
         for i in range(4,8):
             m3 += str(info[i]) + ', '
         m3 += '\n'
-        m4 = "==================== finished *error* ( finished time : " + info[4] + " ) ==================== \n"
-        m = m1 + m2 + m3 + m4
+        m4 = info[10]
+        m5 = "==================== finished *error* ( finished time : " + info[8] + " ) ==================== \n"
+        m = m1 + m2 + m3 + m4 + m5
         f.write(m)
         f.close()
 
@@ -247,9 +248,9 @@ def saveImage(fm,result,episode):
     plt.xlabel("epoch")
     plt.ylabel("total point")
     plt.legend(loc='lower right')
-    plt.xscale('log')
+    #plt.xscale('log')
     fn1 = './log/' + fm + '/images/result_totalpoint/result_totalpoint_' + str(episode) + '.png'
-    #plt.savefig(fn1)
+    plt.savefig(fn1)
     plt.close()
 
     # tile point
@@ -263,9 +264,9 @@ def saveImage(fm,result,episode):
     plt.xlabel("epoch")
     plt.ylabel("tilepoint")
     plt.legend(loc='lower right')
-    plt.xscale('log')
+    #plt.xscale('log')
     fn2 = './log/' + fm + '/images/result_tilepoint/result_tilepoint_' + str(episode) + '.png'
-    #plt.savefig(fn2)
+    plt.savefig(fn2)
     plt.close()
 
     # field point
@@ -279,9 +280,9 @@ def saveImage(fm,result,episode):
     plt.xlabel("epoch")
     plt.ylabel("fieldpoint")
     plt.legend(loc='lower right')
-    plt.xscale('log')
+    #plt.xscale('log')
     fn3 = './log/' + fm + '/images/result_fieldpoint/result_fieldpoint_' + str(episode) + '.png'
-    #plt.savefig(fn3)
+    plt.savefig(fn3)
     plt.close()
 
     # agent1_1 and agent1_2
@@ -312,8 +313,8 @@ def saveImage(fm,result,episode):
     plt.ylabel("agent2_1 and agent2_2 : reward")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn4 = './log/' + fm + '/images/result_reward/agent2/result_reward21_and_reward22_' + str(episode) + '.png'
-    plt.savefig(fn4)
+    fn5 = './log/' + fm + '/images/result_reward/agent2/result_reward21_and_reward22_' + str(episode) + '.png'
+    plt.savefig(fn5)
     plt.close()
 
     # avg of avg total reward
@@ -328,8 +329,8 @@ def saveImage(fm,result,episode):
     plt.ylabel("avg of avg total reward")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn4 = './log/' + fm + '/images/result_reward/avg_avg_totalreward/avg_avg_totalreward_' + str(episode) + '.png'
-    plt.savefig(fn4)
+    fn6 = './log/' + fm + '/images/result_reward/avg_avg_totalreward/avg_avg_totalreward_' + str(episode) + '.png'
+    plt.savefig(fn6)
     plt.close()
 
     # avg of sum total reward
@@ -344,8 +345,8 @@ def saveImage(fm,result,episode):
     plt.ylabel("avg of sum total reward")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn4 = './log/' + fm + '/images/result_reward/avg_sum_totalreward/avg_sum_totalreward_' + str(episode) + '.png'
-    plt.savefig(fn4)
+    fn7 = './log/' + fm + '/images/result_reward/avg_sum_totalreward/avg_sum_totalreward_' + str(episode) + '.png'
+    plt.savefig(fn7)
     plt.close()
 
 def saveImage_nocounts(fm,nocounts,episode):
