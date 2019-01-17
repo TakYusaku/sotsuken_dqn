@@ -193,17 +193,18 @@ class DQN:
             target2 = reward_b[1]
 
             # 価値計算
-            if not (next_state_b[0] == np.zeros(np.array(state_b[0]).shape)).all(axis=1): # next_state が 0 でない
+            if not (np.array(next_state_b[0]) == np.zeros(np.array(state_b[0]).shape)).all(axis=1): # next_state が 0 でない
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
                 retmainQs1 = self.final.predict(next_state_b[0])[0] # next state に対するpredict
                 next_action1 = np.argmax(retmainQs1)  # 最大の報酬を返す行動を選択する
                 target = reward_b[0] + gamma * targetQN.model.predict(next_state_b[0])[0][next_action1]
 
-            if not (next_state_b[1] == np.zeros(np.array(state_b[1]).shape)).all(): # next_state が 0 でない
+            if not (np.array(next_state_b[1]) == np.zeros(np.array(state_b[1]).shape)).all(axis=1): # next_state が 0 でない
                 # 行動決定のQネットワークと価値観数のQネットワークは分離
                 retmainQs2 = self.final.predict(next_state_b[1])[0] # next state に対するpredict
                 next_action2 = np.argmax(retmainQs2)  # 最大の報酬を返す行動を選択する
                 target2 = reward_b[1] + gamma * targetQN.model.predict(next_state_b[1])[0][next_action2]
+
             targets[i] = self.final.predict(state_b[0])    # Qネットワークの出力
             targets[i][action_b[0]] = target               # 教師信号
             targets2[i] = self.final.predict(state_b[1])    # Qネットワークの出力
