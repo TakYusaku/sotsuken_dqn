@@ -434,7 +434,7 @@ if __name__ == '__main__':
             
             # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
             #
-            if episode+1 == 10 or episode+1 == 20:#(episode+1) == (500+1000*cnt):
+            if episode+1 == 10 or episode+1 == 15:#(episode+1) == (500+1000*cnt):
             #
                 m = ''
                 if cnt == 1:
