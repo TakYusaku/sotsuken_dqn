@@ -211,9 +211,11 @@ class DQN:
             targets2[i] = self.model.predict(np.array(state_b[1]))   # Qネットワークの出力
             targets2[i][action_b[1]] = target2             # 教師信号
 
-        self.result = self.model.fit(inputs, targets, epochs=1, verbose=1, batch_size=self.batch_size) # verbose=0 は訓練の様子を表示しない
-        self.result = self.model.fit(inputs2, targets2, epochs=1, verbose=1, batch_size=self.batch_size) # verbose=0 は訓練の様子を表示しない
+        self.result = self.model.fit(inputs, targets, epochs=1, verbose=1, batch_size=self.batch_size,validation_data=(inputs, targets)) # verbose=0 は訓練の様子を表示しない
+        self.result = self.model.fit(inputs2, targets2, epochs=1, verbose=1, batch_size=self.batch_size,validation_data=(inputs2, target2)) # verbose=0 は訓練の様子を表示しない
         self.history = self.result.history
+        print(self.history)
+        print(type(self.history))
         return self.result
     
     def loadWeight(self, fn):
