@@ -526,8 +526,8 @@ if __name__ == '__main__':
                 #
                 if episode+1 >= 6 and not selfplay:#episode+1 >= 1000 and not selfplay:
                 #
-                    ts.save_history(fm,save_history,(episode-6+1)) #
-                    ts.save_history(fm,save_history,(episode+1-6)*41) #
+                    ts.save_history(fm,save_history,(episode-5+1)) #
+                    ts.save_history(fm,save_history,(episode+1-5)*41) #
                     ts.avg_save_history(fm,avg_save_history[2:],(episode-6+1)) #
 
         # 学習終了後の後処理
@@ -547,9 +547,9 @@ if __name__ == '__main__':
         ts.saveImage(fm,result,num_episode)
         ###
         #ts.save_history(fm,save_history,(num_episode-500)*40)
-        ts.save_history(fm,save_history,15-6)
-        ts.save_history(fm,save_history,(15-6)*41)
-        ts.avg_save_history(fm,avg_save_history[2:],(15-6))
+        ts.save_history(fm,save_history,15-5)
+        ts.save_history(fm,save_history,(15-5)*41)
+        ts.avg_save_history(fm,avg_save_history[2:],(15-5))
         ###
         total_no_counts.append(no_counts_one)
         total_no_counts.append(no_counts_two)
@@ -563,13 +563,14 @@ if __name__ == '__main__':
         main_os.save_weight(fm,num_episode,'main_os')
         target_os.save_weight(fm,num_episode,'target_os')
 
-        print(np.array(avg_save_history).shape)
+        print(np.array(avg_save_history[2:]).shape)
+        print(len(avg_save_history[0][0]))
         print(np.array(save_history).shape)
 
         dqn.saveHistory(fm,num_episode,[save_history,avg_save_history[2:]],'loss_acc')
         dqn.saveHistory(fm,num_episode,[WPCT_LATEST,TSUYOKUNATTA],'WPCT_LATEST_and_TSUYOKUNATTA')
 
-        ts.saveWPCT(fm,WPCT_LATEST)
+        ts.saveWPCT(fm,WPCT_LATEST,cnt)
         ts.Log(fm,"TSUYOKUNATTA",TSUYOKUNATTA)
 
 
