@@ -164,7 +164,7 @@ if __name__ == '__main__':
             state_e = [state[2],state[3]]
 
             # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
-            if episode+1 == 10: #(episode+1) == (400+1100*cnt):
+            if episode+1 == 10 or episode+1 == 20: #(episode+1) == (400+1100*cnt):
                 m = ''
                 if cnt == 1:
                     m += str(cnt) + ' : '
@@ -180,7 +180,7 @@ if __name__ == '__main__':
                         target_os.model.set_weights(target_n_2.model.get_weights())
                         main_n_1.model.set_weights(main_n_2.model.get_weights())
                         target_n_1.model.set_weights(target_n_2.model.get_weights())
-                        m2 += 'n2_won, os_n2, n1_n2, n2_n2'
+                        m += 'n2_won, os_n2, n1_n2, n2_n2'
 
                     main_os.save_weight(fm,cnt,'main_os')
                     target_os.save_weight(fm,cnt,'target_os')
