@@ -255,7 +255,7 @@ class DQN:
         plt.savefig(fn)
         plt.close()
 
-    def selfPlay(self,fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info,actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four):
+    def selfPlay(fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info,actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four):
         print("selfplay : %d/100" %slp_num)
         selfplay = True
         Win_latest = 0

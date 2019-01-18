@@ -179,7 +179,7 @@ if __name__ == '__main__':
                         target_n_1.model.set_weights(target_n_2.model.get_weights())
                         m2 += 'n2_won, os_n2, n1_n2, n2_n2'
 
-                else cnt > 1:
+                else :
                     m += str(cnt) + ' : '
                     if win_one >= win_two:
                         main_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
