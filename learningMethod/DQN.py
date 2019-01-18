@@ -461,7 +461,7 @@ def selfPlay(fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame
             state_f = [state[0],state[1]]
             state_e = [state[2],state[3]]
 
-            for j in lange(terns):
+            for j in range(terns):
                 env.countStep() # epoch num のカウント
 
                 if not info:
