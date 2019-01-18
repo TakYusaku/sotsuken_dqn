@@ -119,7 +119,7 @@ if __name__ == '__main__':
     target_os = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
 
     try:
-        for episode in range(20)#num_episode):
+        for episode in range(20):#num_episode):
             # now epoch　の記録
             kari_epi += 1
             # 環境のリセット
