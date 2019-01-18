@@ -11,6 +11,7 @@ import pydotplus
 import numpy as np
 from collections import deque
 from matplotlib import pyplot as plt
+import tool.tools as ts
 
 class DQN:
     def __init__(self,type,info,palam,palam_dense):
