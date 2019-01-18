@@ -186,7 +186,7 @@ def Log(fm, when,info=None,epoch=None):
         f.write(m1)
         f.close
 
-    elif epoch is None and when is 'slp_f':
+    elif when == 'slp_f':
         f.write(info)
         f.close
 

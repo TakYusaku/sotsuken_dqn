@@ -119,7 +119,7 @@ if __name__ == '__main__':
     target_os = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
 
     try:
-        for episode in range(num_episode):
+        for episode in range(20)#num_episode):
             # now epoch　の記録
             kari_epi += 1
             # 環境のリセット
@@ -162,70 +162,6 @@ if __name__ == '__main__':
 
             state_f = [state[0],state[1]]
             state_e = [state[2],state[3]]
-
-            # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
-            if episode+1 == 10 or episode+1 == 20: #(episode+1) == (400+1100*cnt):
-                m = ''
-                if cnt == 1:
-                    m += str(cnt) + ' : '
-                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win = dqn.selfPlay(fm,env,cnt,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
-                    if win:
-                        main_os.model.set_weights(main_n_1.model.get_weights())
-                        target_os.model.set_weights(target_n_1.model.get_weights())
-                        main_n_2.model.set_weights(main_n_1.model.get_weights())
-                        target_n_2.model.set_weights(target_n_1.model.get_weights())
-                        m += 'n1_won, os_n1, n1_n1, n2_n1, '
-                    else:
-                        main_os.model.set_weights(main_n_2.model.get_weights())
-                        target_os.model.set_weights(target_n_2.model.get_weights())
-                        main_n_1.model.set_weights(main_n_2.model.get_weights())
-                        target_n_1.model.set_weights(target_n_2.model.get_weights())
-                        m += 'n2_won, os_n2, n1_n2, n2_n2'
-
-                    main_os.save_weight(fm,cnt,'main_os')
-                    target_os.save_weight(fm,cnt,'target_os')
-
-                else :
-                    m += str(cnt) + ' : '
-                    if win_one >= win_two:
-                        main_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-                        target_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-                        main_new.model.set_weights(main_n_1.model.get_weights())
-                        target_new.model.set_weights(target_n_1.model.get_weights())
-                        m += 'n1_new, '
-
-                    else:
-                        main_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-                        target_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-                        main_new.model.set_weights(main_n_2.model.get_weights())
-                        target_new.model.set_weights(target_n_2.model.get_weights())
-                        m += 'n2_new, '
-
-                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win = dqn.selfPlay(fm,env,cnt,main_new,main_os,target_new,target_os,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
-                    if win:
-                        tsuyokunatta += 1
-                        main_os.model.set_weights(main_new.model.get_weights())
-                        target_os.model.set_weights(target_new.model.get_weights())
-                        main_os.save_weight(fm,cnt,'main_os')
-                        target_os.save_weight(fm,cnt,'target_os')
-                        m += 'new_won, os_new, '                      
-                    else:
-                        m += 'new_lose, os_stay, '
-
-                    if win_one >= win_two:
-                        main_n_2.model.set_weights(main_new.model.get_weights())
-                        target_n_2.model.set_weights(target_new.model.get_weights())
-                        m += 'n1_n1, n2_n1, '
-                    else:
-                        main_n_1.model.set_weights(main_new.model.get_weights())
-                        target_n_1.model.set_weights(target_new.model.get_weights())
-                        m += 'n1_n2, n2_n2, ' 
-                m += '\n'
-                ts.Log(fm,'spl_f',m)
-                win_one = 0
-                win_two = 0
-                cnt += 1
-
             
             ##### main ruetine #####
             for i in range(terns):
@@ -500,9 +436,72 @@ if __name__ == '__main__':
                 Win2 += 1
                 win_two += 1
                 print('agent2 won')
+            
+            # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
+            if episode+1 == 10 or episode+1 == 20: #(episode+1) == (400+1100*cnt):
+                m = ''
+                if cnt == 1:
+                    m += str(cnt) + ' : '
+                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win = dqn.selfPlay(fm,env,cnt,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
+                    if win:
+                        main_os.model.set_weights(main_n_1.model.get_weights())
+                        target_os.model.set_weights(target_n_1.model.get_weights())
+                        main_n_2.model.set_weights(main_n_1.model.get_weights())
+                        target_n_2.model.set_weights(target_n_1.model.get_weights())
+                        m += 'n1_won, os_n1, n1_n1, n2_n1, '
+                    else:
+                        main_os.model.set_weights(main_n_2.model.get_weights())
+                        target_os.model.set_weights(target_n_2.model.get_weights())
+                        main_n_1.model.set_weights(main_n_2.model.get_weights())
+                        target_n_1.model.set_weights(target_n_2.model.get_weights())
+                        m += 'n2_won, os_n2, n1_n2, n2_n2'
+
+                    main_os.save_weight(fm,cnt,'main_os')
+                    target_os.save_weight(fm,cnt,'target_os')
+
+                else :
+                    m += str(cnt) + ' : '
+                    if win_one >= win_two:
+                        main_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
+                        target_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
+                        main_new.model.set_weights(main_n_1.model.get_weights())
+                        target_new.model.set_weights(target_n_1.model.get_weights())
+                        m += 'n1_new, '
+
+                    else:
+                        main_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
+                        target_new = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
+                        main_new.model.set_weights(main_n_2.model.get_weights())
+                        target_new.model.set_weights(target_n_2.model.get_weights())
+                        m += 'n2_new, '
+
+                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win = dqn.selfPlay(fm,env,cnt,main_new,main_os,target_new,target_os,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
+                    if win:
+                        tsuyokunatta += 1
+                        main_os.model.set_weights(main_new.model.get_weights())
+                        target_os.model.set_weights(target_new.model.get_weights())
+                        main_os.save_weight(fm,cnt,'main_os')
+                        target_os.save_weight(fm,cnt,'target_os')
+                        m += 'new_won, os_new, '                      
+                    else:
+                        m += 'new_lose, os_stay, '
+
+                    if win_one >= win_two:
+                        main_n_2.model.set_weights(main_new.model.get_weights())
+                        target_n_2.model.set_weights(target_new.model.get_weights())
+                        m += 'n1_n1, n2_n1, '
+                    else:
+                        main_n_1.model.set_weights(main_new.model.get_weights())
+                        target_n_1.model.set_weights(target_new.model.get_weights())
+                        m += 'n1_n2, n2_n2, ' 
+                m += '\n'
+                ts.Log(fm,'spl_f',m,cnt)
+                win_one = 0
+                win_two = 0
+                cnt += 1
 
 
-            if episode != 0 and (episode+1)%250 == 0 and episode!=num_episode-1 : # episode%250 == 0 ######$$$$$$$$$
+            if episode != 0 and (episode+1)%1 == 0 and episode!=num_episode-1 : # episode%250 == 0 ######$$$$$$$$$
                 info_epoch = [epi_processtime[episode],float(Win1/(episode+1)),float(Win2/(episode+1)),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
                 ts.Log(fm,"now learning",info_epoch,episode+1)
                 result = [s,s_avg,save_1,save_2]
