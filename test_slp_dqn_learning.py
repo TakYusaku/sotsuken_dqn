@@ -495,7 +495,7 @@ if __name__ == '__main__':
                         target_n_1.model.set_weights(target_new.model.get_weights())
                         m += 'n1_n2, n2_n2, ' 
                 m += '\n'
-                ts.Log(fm,'spl_f',m,cnt)
+                ts.Log(fm,'slp_f',m,cnt)
                 win_one = 0
                 win_two = 0
                 cnt += 1
