@@ -237,11 +237,6 @@ class DQN:
         with open(fn, mode='rb') as f:
             self.history = pickle.load(f)
 
-    def save_history(self, fn, episode, types):
-        fm = './log/' + fn + '/nn_history/' + types + '_history_' + str(episode) + '.pickle'
-        with open(fm, mode='wb') as f:
-            pickle.dump(self.history, f)
-
     def plot_history(self,fm,epoch,name):
         ## 学習時の誤差
         fig, (axL, axR) = plt.subplots(ncols=2, figsize=(10,4))
@@ -325,6 +320,11 @@ class Actor:
                 self.epsilon = self.final_epsilon
 
         return on,coor,action,ac,di
+
+def saveHistory(fn, episode, history, types):
+    fm = './log/' + fn + '/nn_history/' + types + '_history_' + str(episode) + '.pickle'
+    with open(fm, mode='wb') as f:
+        pickle.dump(history, f)
 
 def getOthers(env,obs,turn):
     obs_f = obs[0]
@@ -692,4 +692,4 @@ def selfPlay(fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame
                 win = 0
             elif Win_latest == Win_old:
                 win = np.random.choice([0,1])
-        return memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win
+        return memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win,float(Win_latest/100)

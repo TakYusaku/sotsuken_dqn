@@ -31,6 +31,8 @@ def init_func(fm):
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images'
     os.mkdir(mkdi)
+    mkdir = './log/' + fm + '/images/WPCT_LATEST'
+    os.mkdir(mkdir)
     mkdi = './log/' + fm + '/images/result_totalpoint'
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/result_tilepoint'
@@ -43,38 +45,26 @@ def init_func(fm):
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/result_reward/agent2'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/result_reward/avg_avg_totalreward/'
+    mkdi = './log/' + fm + '/images/result_reward/avg_avg_totalreward'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/result_reward/avg_sum_totalreward/'
+    mkdi = './log/' + fm + '/images/result_reward/avg_sum_totalreward'
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/model_loss_and_accuracy'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy'
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/fullflame'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent1'
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/per_game'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent2'
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/agent1'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/avg'
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/agent2'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss'
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/merge'
     os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent1'
-    os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent2'
-    os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss/avg'
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/avg'
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/no_counts'
     os.mkdir(mkdi)
-    """
-    mkdi = './log/' + fm + '/im_field'
-    os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/im_field/point'
-    os.mkdir(mkdi)
-    mkdi = './log/' + fm + '/im_field/tile'
-    os.mkdir(mkdi)
-    """
 
 
 def readQtable(type):
@@ -215,6 +205,14 @@ def Log(fm, when,info=None,epoch=None):
         m = m1 + m2 + m3 + m4 + m5
         f.write(m)
         f.close()
+    
+    elif when == "TSUYOKUNATTA":
+        m = 'TSUYOKUNATTA timing'
+        for i in info:
+            m += (str(i) + ',')
+        m += '\n'
+        f.write(m)
+        f.close
 
 def getTime(type, start=None):
     now = datetime.datetime.now()
@@ -378,26 +376,28 @@ def save_history(fm,save_history,episode):
     # history of agent1 acc
     plt.figure()
     plt.plot(save_history[0][0], 'r', label="acc of agent1")
+    plt.plot(save_history[0][1], 'b', label="loss of agent1")
     plt.xlim(0, episode)
-    plt.ylim(min(save_history[0][0])-1, max(save_history[0][0])+1)
+    plt.ylim(min(min(save_history[0][1]),min(save_history[0][0]))-1, max(max(save_history[0][0]),max(save_history[0][1]))+1)
     plt.xlabel("epoch")
-    plt.ylabel("accuracy of agent1")
+    plt.ylabel("accuracy and loss of agent1")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn8 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent1/acc_agent1_' + str(episode) + '.png'
+    fn8 = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/agent1/loss_acc_agent1_' + str(episode) + '.png'
     plt.savefig(fn8)
     plt.close()
 
     # history of agent2 acc
     plt.figure()
-    plt.plot(save_history[1][0], 'b', label="acc of agent2")
+    plt.plot(save_history[1][0], 'r', label="acc of agent2")
+    plt.plot(save_history[1][1], 'b', label="loss of agent2")
     plt.xlim(0, episode)
-    plt.ylim(min(save_history[1][0])-1, max(save_history[1][0])+1)
+    plt.ylim(min(min(save_history[1][1]),min(save_history[1][0]))-1, max(max(save_history[1][0]),max(save_history[1][1]))+1)
     plt.xlabel("epoch")
-    plt.ylabel("accuracy of agent2")
+    plt.ylabel("accuracy and loss of agent2")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn9 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent2/acc_agent2_' + str(episode) + '.png'
+    fn9 = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/agent2/loss_acc_agent2_' + str(episode) + '.png'
     plt.savefig(fn9)
     plt.close()
 
@@ -405,84 +405,51 @@ def save_history(fm,save_history,episode):
     plt.figure()
     plt.plot(save_history[0][0], 'r', label="acc of agent1")
     plt.plot(save_history[1][0], 'b', label="acc of agent2")
+    plt.plot(save_history[0][1], 'r', label="loss of agent1", alpha=0.5)
+    plt.plot(save_history[1][1], 'b', label="loss of agent2", alpha=0.5)
     plt.xlim(0, episode)
-    plt.ylim(min(min(save_history[0][0]),min(save_history[1][0]))-1, max(max(save_history[0][0]),max(save_history[1][0]))+1)
+    plt.ylim(min(min(save_history[0][0]),min(save_history[1][0]),min(save_history[0][1]),min(save_history[1][1]))-1, max(max(save_history[0][1]),max(save_history[1][1]),max(save_history[0][0]),max(save_history[1][0]))+1)
     plt.xlabel("epoch")
-    plt.ylabel("accuracy")
+    plt.ylabel("accuracy and loss of agent1 and agent2")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn10 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/acc_' + str(episode) + '.png'
+    fn10 = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/merge/loss_and_acc_' + str(episode) + '.png'
     plt.savefig(fn10)
-    plt.close()
-
-    # history of agent1 loss
-    plt.figure()
-    plt.plot(save_history[0][1], 'r', label="loss of agent1")
-    plt.xlim(0, episode)
-    plt.ylim(min(save_history[0][1])-1, max(save_history[0][1])+1)
-    plt.xlabel("epoch")
-    plt.ylabel("accuracy of agent1")
-    plt.legend(loc='lower right')
-    #plt.xscale('log')
-    fn11 = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent1/loss_agent1_' + str(episode) + '.png'
-    plt.savefig(fn11)
-    plt.close()
-
-    # history of agent2 loss
-    plt.figure()
-    plt.plot(save_history[1][1], 'b', label="loss of agent2")
-    plt.xlim(0, episode)
-    plt.ylim(min(save_history[1][1])-1, max(save_history[1][1])+1)
-    plt.xlabel("epoch")
-    plt.ylabel("accuracy of agent2")
-    plt.legend(loc='lower right')
-    #plt.xscale('log')
-    fn12 = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent2/loss_agent2_' + str(episode) + '.png'
-    plt.savefig(fn12)
-    plt.close()
-
-    # history of agent1 and agent2 loss
-    plt.figure()
-    plt.plot(save_history[0][1], 'r', label="loss of agent1")
-    plt.plot(save_history[1][1], 'b', label="loss of agent2")
-    plt.xlim(0, episode)
-    plt.ylim(min(min(save_history[0][1]),min(save_history[1][1]))-1, max(max(save_history[0][1]),max(save_history[1][1]))+1)
-    plt.xlabel("epoch")
-    plt.ylabel("loss")
-    plt.legend(loc='lower right')
-    #plt.xscale('log')
-    fn13 = './log/' + fm + '/images/model_loss_and_accuracy/loss/loss_' + str(episode) + '.png'
-    plt.savefig(fn13)
     plt.close()
 
     # history of agent1 and agent2 avg acc
     plt.figure()
     plt.plot(save_history[2][0], 'r', label="acc of agent1")
     plt.plot(save_history[3][0], 'b', label="acc of agent2")
+    plt.plot(save_history[2][1], 'r', label="loss of agent1", alpha=0.5)
+    plt.plot(save_history[3][1], 'b', label="loss of agent2", alpha=0.5)
     plt.xlim(0, episode)
-    plt.ylim(min(min(save_history[2][0]),min(save_history[3][0]))-1, max(max(save_history[2][0]),max(save_history[3][0]))+1)
+    plt.ylim(min(min(save_history[2][0]),min(save_history[3][0]),min(save_history[2][1]),min(save_history[3][1]))-1, max(max(save_history[2][0]),max(save_history[3][0]),max(save_history[2][1]),max(save_history[3][1]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy and loss of agent1 and agent2: avg")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn14 = './log/' + fm + '/images/model_loss_and_accuracy/fullflame/avg/loss_and_acc_avg_' + str(episode) + '.png'
+    plt.savefig(fn14)
+    plt.close()
+
+
+def avg_save_history(fm,save_history,episode):
+    # history of agent1 and agent2 acc
+    plt.figure()
+    plt.plot(save_history[0][0], 'r', label="acc of agent1 per game")
+    plt.plot(save_history[1][0], 'b', label="acc of agent2 per game")
+    plt.plot(save_history[0][1], 'r', label="loss of agent1", alpha=0.5)
+    plt.plot(save_history[1][1], 'b', label="loss of agent2", alpha=0.5)
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[0][0]),min(save_history[1][0]),min(save_history[0][1]),min(save_history[1][1]))-1, max(max(save_history[0][0]),max(save_history[1][0]),max(save_history[0][1]),max(save_history[1][1]))+1)
     plt.xlabel("epoch")
     plt.ylabel("accuracy")
     plt.legend(loc='lower right')
     #plt.xscale('log')
-    fn14 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/avg/acc_avg_' + str(episode) + '.png'
-    plt.savefig(fn14)
+    fn18 = './log/' + fm + '/images/model_loss_and_accuracy/per_game/loss_and_acc_per_game_' + str(episode) + '.png'
+    plt.savefig(fn18)
     plt.close()
-
-    # history of agent1 and agent2 avg loss
-    plt.figure()
-    plt.plot(save_history[2][1], 'r', label="loss of agent1")
-    plt.plot(save_history[3][1], 'b', label="loss of agent2")
-    plt.xlim(0, episode)
-    plt.ylim(min(min(save_history[2][1]),min(save_history[3][1]))-1, max(max(save_history[2][1]),max(save_history[3][1]))+1)
-    plt.xlabel("epoch")
-    plt.ylabel("loss")
-    plt.legend(loc='lower right')
-    #plt.xscale('log')
-    fn15 = './log/' + fm + '/images/model_loss_and_accuracy/loss/avg/loss_avg_' + str(episode) + '.png'
-    plt.savefig(fn15)
-    plt.close()
-
 
 def saveImage_nocounts(fm,nocounts,episode):
     fn = './log/' + fm + '/images/no_counts/' + str(episode) + '_nocounts.png'
@@ -499,6 +466,19 @@ def saveImage_nocounts(fm,nocounts,episode):
     #plt.xscale('log')
     plt.savefig(fn)
     plt.close()
+
+def saveWPCT(fm,WPCT_LATEST,cnt):
+    plt.figure()
+    plt.plot(WPCT, 'r', label="WPCT of latest")
+    plt.xlim(0, cnt)
+    plt.ylim(min(WPCT_LATEST)-1, max(WPCT_LATEST)+1))
+    plt.xlabel("number of selfplay")
+    plt.ylabel("WPCT")
+    plt.legend(loc='lower right')
+    fn = './log/' + fm + '/images/WPCT_LATEST/result.png'
+    #plt.xscale('log')
+    plt.savefig(fn)
+    plt.close()   
 """
 def notify(num_episode,Win1,Win2,s3,s6):#,s3,s4,s5,s6):
     #table = Texttable()

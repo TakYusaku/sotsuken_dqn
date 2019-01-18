@@ -58,6 +58,10 @@ if __name__ == '__main__':
 
 
     save_history = [[[],[]],[[],[]],[[],[]],[[],[]]] ###$$$$$$$$
+    avg_save_history = [[[],[]],[[],[]],[[],[]],[[],[]]]
+
+    WPCT_LATEST = []
+    TSUYOKUNATTA = []
 
     # 勝利数 win1 は DQN1
     Win1 = 0
@@ -360,6 +364,10 @@ if __name__ == '__main__':
                     save_history[2][1].append(mean(save_history[0][1]))
                     save_history[3][0].append(mean(save_history[1][0]))
                     save_history[3][1].append(mean(save_history[1][1]))
+                    avg_save_history[0][0].append(hist2['acc'][0])
+                    avg_save_history[0][1].append(hist2['loss'][0])
+                    avg_save_history[1][0].append(hist4['acc'][0])
+                    avg_save_history[1][1].append(hist4['loss'][0])
 
                 
                 if DQN_mode:
@@ -423,6 +431,13 @@ if __name__ == '__main__':
             s[5].append(s_p[5])
             s_avg[5].append(mean(s[5]))
 
+            avg_save_history[2][0].append(mean(avg_save_history[0][0]))
+            avg_save_history[2][1].append(mean(avg_save_history[0][1]))
+            avg_save_history[3][0].append(mean(avg_save_history[1][0]))
+            avg_save_history[3][1].append(mean(avg_save_history[1][1]))
+            avg_save_history[0] = [[],[]]
+            avg_save_history[1] = [[],[]]
+
             if env.judVoL() == "Win_1":
                 Win1 += 1
                 win_one += 1
@@ -439,7 +454,7 @@ if __name__ == '__main__':
                 m = ''
                 if cnt == 1:
                     m += str(cnt) + ' : '
-                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win = dqn.selfPlay(fm,env,cnt,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
+                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win,wpct_latest = dqn.selfPlay(fm,env,cnt,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
                     if win:
                         main_os.model.set_weights(main_n_1.model.get_weights())
                         target_os.model.set_weights(target_n_1.model.get_weights())
@@ -455,6 +470,7 @@ if __name__ == '__main__':
 
                     main_os.save_weight(fm,cnt,'main_os')
                     target_os.save_weight(fm,cnt,'target_os')
+                    TSUYOKUNATTA.append(cnt)
 
                 else :
                     m += str(cnt) + ' : '
@@ -472,13 +488,14 @@ if __name__ == '__main__':
                         target_new.model.set_weights(target_n_2.model.get_weights())
                         m += 'n2_new, '
 
-                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win = dqn.selfPlay(fm,env,cnt,main_new,main_os,target_new,target_os,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
+                    memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win,wpct_latest = dqn.selfPlay(fm,env,cnt,main_new,main_os,target_new,target_os,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
                     if win:
                         tsuyokunatta += 1
                         main_os.model.set_weights(main_new.model.get_weights())
                         target_os.model.set_weights(target_new.model.get_weights())
                         main_os.save_weight(fm,cnt,'main_os')
                         target_os.save_weight(fm,cnt,'target_os')
+                        TSUYOKUNATTA.append(cnt)
                         m += 'new_won, os_new, tsuyokunattane, '                      
                     else:
                         m += 'new_lose, os_stay, '
@@ -491,14 +508,16 @@ if __name__ == '__main__':
                         main_n_1.model.set_weights(main_new.model.get_weights())
                         target_n_1.model.set_weights(target_new.model.get_weights())
                         m += 'n1_n2, n2_n2, ' 
-                m += '\n'
+                m += (str(wpct_latest) + '_latest\n')
                 ts.Log(fm,'slp_f',m,cnt)
                 win_one = 0
                 win_two = 0
                 cnt += 1
+                WPCT_LATEST.append(wpct_latest)
 
-
+            #
             if episode != 0 and episode!=num_episode-1 and (episode+1)%1 == 0: #(episode+1)%500 == 0:
+            #
                 info_epoch = [epi_processtime[episode],float(Win1/(episode+1)),float(Win2/(episode+1)),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
                 ts.Log(fm,"now learning",info_epoch,episode+1)
                 result = [s,s_avg,save_1,save_2]
@@ -506,7 +525,9 @@ if __name__ == '__main__':
                 #
                 if episode+1 >= 6 and not selfplay:#episode+1 >= 1000 and not selfplay:
                 #
-                    ts.save_history(fm,save_history,episode+1)
+                    ts.save_history(fm,save_history,(episode-6+1)) #
+                    ts.save_history(fm,save_history,(episode+1-6)*41) #
+                    ts.avg_save_history(fm,avg_save_history[2:],(episode-6+1)) #
 
         # 学習終了後の後処理
         le_delta,fs,now = ts.getTime("timestamp_on",le_start) # 総実行時間の記録
@@ -523,7 +544,12 @@ if __name__ == '__main__':
         ts.Log(fm,"finished",info_finished)
         result = [s,s_avg,save_1,save_2]
         ts.saveImage(fm,result,num_episode)
-        ts.save_history(fm,save_history,num_episode)
+        ###
+        #ts.save_history(fm,save_history,(num_episode-500)*40)
+        ts.save_history(fm,save_history,15-6)
+        ts.save_history(fm,save_history,(15-6)*41)
+        ts.avg_save_history(fm,avg_save_history[2:],(15-6))
+        ###
         total_no_counts.append(no_counts_one)
         total_no_counts.append(no_counts_two)
         total_no_counts.append(no_counts_three)
@@ -535,6 +561,12 @@ if __name__ == '__main__':
         target_n_2.save_weight(fm,num_episode,'target_n2')
         main_os.save_weight(fm,num_episode,'main_os')
         target_os.save_weight(fm,num_episode,'target_os')
+
+        dqn.saveHistory(fm,num_episode,[save_history,avg_save_history[2:]],'loss_acc')
+        dqn.saveHistory(fm,num_episode,[WPCT_LATEST,TSUYOKUNATTA],'WPCT_LATEST_and_TSUYOKUNATTA')
+
+        ts.saveWPCT(fm,WPCT_LATEST)
+        ts.Log(fm,"TSUYOKUNATTA",TSUYOKUNATTA)
 
 
     except:
@@ -570,4 +602,11 @@ if __name__ == '__main__':
         target_n_2.save_weight(fm,kari_epi,'target_n2')
         main_os.save_weight(fm,kari_epi,'main_os')
         target_os.save_weight(fm,kari_epi,'target_os')
-        ts.save_history(fm,save_history,kari_epi)
+        if kari_epi > 500:
+            ts.save_history(fm,save_history,kari_epi*40) ##########
+            dqn.saveHistory(fm,kari_epi,[save_history,avg_save_history[2:]],'loss_acc')
+            dqn.saveHistory(fm,kari_epi,[WPCT_LATEST,TSUYOKUNATTA],'WPCT_LATEST_and_TSUYOKUNATTA')
+            ts.saveWPCT(fm,WPCT_LATEST,cnt)
+            ts.Log(fm,"TSUYOKUNATTA",TSUYOKUNATTA)
+        else:
+            pass
