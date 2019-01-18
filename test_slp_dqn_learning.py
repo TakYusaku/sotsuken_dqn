@@ -410,7 +410,7 @@ if __name__ == '__main__':
                 memory_state_1.add((state_f, action_f, reward_f, [next_state[0],next_state[1]]))
                 memory_state_2.add((state_e, action_e, reward_e, [next_state[2],next_state[3]]))
 
-                if episode+1 > 4 #episode*40 >= 500*40 and not selfplay:
+                if episode+1 > 4: #episode*40 >= 500*40 and not selfplay:
                     main_n_1.fitting(memory_state_1, gamma, target_n_1)
                     main_n_2.fitting(memory_state_2, gamma, target_n_2)
                 
