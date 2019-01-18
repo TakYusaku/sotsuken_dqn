@@ -216,6 +216,8 @@ class DQN:
         self.history = self.result.history
         print(self.history)
         print(type(self.history))
+        print(self.result)
+        print(type(self.result))
         return self.result
     
     def loadWeight(self, fn):
