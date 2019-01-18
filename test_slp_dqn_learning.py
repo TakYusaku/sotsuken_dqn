@@ -37,14 +37,6 @@ if __name__ == '__main__':
     # 学習回数
     num_episode = info[1]
 
-    # 学習率 _q is q learning, _m is mcm    #############################
-    #al_q = info[4]
-    #al_m = info[5]
-
-    type_e = 'nb'
-    al_r = 0.01
-
-
 ### -------- 結果保存 --------
     save_episodereward1 = []
     save_episodereward2 = []
@@ -100,6 +92,7 @@ if __name__ == '__main__':
 
 ### -------- init DQN player 1 --------
     main_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
+"""
     target_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
     memory_state_1 = dqn.ER_Memory(max_size=init_er_memory)
     memory_flame1_1 = dqn.History_Memory(max_size=4)
@@ -119,7 +112,9 @@ if __name__ == '__main__':
     target_os = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
 
     try:
-        for episode in range(num_episode):
+        #
+        for episode in range(15):#num_episode):
+        #
             # now epoch　の記録
             kari_epi += 1
             # 環境のリセット
@@ -353,8 +348,9 @@ if __name__ == '__main__':
                 # 状態の保存
                 memory_state_1.add((state_f, action_f, reward_f, [next_state[0],next_state[1]]))
                 memory_state_2.add((state_e, action_e, reward_e, [next_state[2],next_state[3]]))
-
-                if episode*40 >= 500*40 and not selfplay:
+                #
+                if episode+1 > 5:#(episode+1)*40 >= 500*40 and not selfplay:
+                #
                     hist2 = main_n_1.fitting(memory_state_1, gamma, target_n_1)
                     hist4 = main_n_2.fitting(memory_state_2, gamma, target_n_2)
                     save_history[0][0].append(hist2['acc'][0])
@@ -438,7 +434,9 @@ if __name__ == '__main__':
                 print('agent2 won')
             
             # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
-            if (episode+1) == (500+1000*cnt):
+            #
+            if episode+1 == 10 or episode+1 == 20:#(episode+1) == (500+1000*cnt):
+            #
                 m = ''
                 if cnt == 1:
                     m += str(cnt) + ' : '
@@ -501,12 +499,14 @@ if __name__ == '__main__':
                 cnt += 1
 
 
-            if episode != 0 and (episode+1)%500 == 0 and episode!=num_episode-1 : # episode%250 == 0 ######$$$$$$$$$
+            if episode != 0 and episode!=num_episode-1 and (episode+1)%1 == 0: #(episode+1)%500 == 0:
                 info_epoch = [epi_processtime[episode],float(Win1/(episode+1)),float(Win2/(episode+1)),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
                 ts.Log(fm,"now learning",info_epoch,episode+1)
                 result = [s,s_avg,save_1,save_2]
                 ts.saveImage(fm,result,episode+1)
-                if (episode+1)*40 >= 500*40 and not selfplay:
+                #
+                if episode+1 >= 6 and not selfplay:#episode+1 >= 1000 and not selfplay:
+                #
                     ts.save_history(fm,save_history,episode+1)
 
         # 学習終了後の後処理
@@ -572,3 +572,4 @@ if __name__ == '__main__':
         main_os.save_weight(fm,kari_epi,'main_os')
         target_os.save_weight(fm,kari_epi,'target_os')
         ts.save_history(fm,save_history,kari_epi)
+"""

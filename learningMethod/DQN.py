@@ -6,6 +6,7 @@ from keras.layers.core import Dense, Activation, Flatten, Dropout
 from keras.layers import Conv2D, MaxPooling2D, add
 from keras import backend as K
 from keras.utils import plot_model
+from keras.optimizers import RMSprop
 # pip3 install pydotplus and pip3 install graphviz and brew install graphviz and pip install pydot
 import pydotplus
 import numpy as np
@@ -83,7 +84,12 @@ class DQN:
             self.model.add(Dense(palam[0][5])) # num_category
             self.model.add(Activation(palam[0][9]))
 
-        self.model.compile(loss=palam[0][10], optimizer=palam[0][11], metrics=['accuracy'])
+        if palam[0][11] == 'rmsprop':
+            self.model.compile(loss=palam[0][10], optimizer=RMSprop(lr=float(palam[0][12])), metrics=['accuracy'])
+        else:
+            self.model.compile(loss=palam[0][10], optimizer=palam[0][11], metrics=['accuracy'])
+
+        #self.model.compile(loss=palam[0][10], optimizer=palam[0][11], metrics=['accuracy'])
 
         # show model summary
         self.model.summary()
@@ -172,7 +178,10 @@ class DQN:
             # output and model compiles
             self.model = Model(self.model_input, self.dense_layer)
 
-        self.model.compile(loss=palam[0][10], optimizer=palam[0][11], metrics=['accuracy'])
+        if palam[0][11] == 'rmsprop':
+            self.model.compile(loss=palam[0][10], optimizer=RMSprop(lr=float(palam[0][12])), metrics=['accuracy'])
+        else:
+            self.model.compile(loss=palam[0][10], optimizer=palam[0][11], metrics=['accuracy'])
 
         # show model summary
         self.model.summary()

@@ -136,7 +136,7 @@ def Log(fm, when,info=None,epoch=None):
         f.write(m1)
         f.close()
     elif epoch is None and when is "info":
-        m1 = "li.csv:portnum,epoch,input_image_channels,input_image_num,vector_dim,batch_size_of_input_images,dense_num,output_num,dqn_learning_late\n"
+        m1 = "li.csv:portnum,epoch,input_image_channels,input_image_num,vector_dim,batch_size_of_input_images,dense_num,output_num,dqn_timediscount_late\n"
         a = ''
         for i in range(len(info[0])):
             if i == len(info[0])-1:
@@ -146,7 +146,7 @@ def Log(fm, when,info=None,epoch=None):
         m1 += a
         b = ''
         for i in range(info[0][3]):
-            b = "cnn_input_" + str(i+1) + ".csv:conv2D_1_num,conv2D_2_num,pooling_1_filter,pooling_2_filter,dense_num,output_num,activation_func1,activation_func2,activation_func3,activation_func4,activation_func5,lossfunc_type,optimizer_type\n" 
+            b = "cnn_input_" + str(i+1) + ".csv:conv2D_1_num,conv2D_2_num,pooling_1_filter,pooling_2_filter,dense_num,output_num,activation_func1,activation_func2,activation_func3,activation_func4,activation_func5,lossfunc_type,optimizer_type,(rmsprop_lr)\n" 
             for j in range(len(info[1][i])):
                 if j == len(info[1][i])-1:
                     b += str(info[1][i][j]) + "\n"
