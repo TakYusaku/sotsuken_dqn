@@ -506,7 +506,7 @@ if __name__ == '__main__':
                 ts.Log(fm,"now learning",info_epoch,episode+1)
                 result = [s,s_avg,save_1,save_2]
                 ts.saveImage(fm,result,episode+1)
-                if (episode+1)*40 >= 500*40 and not selfplay:
+                if episode+1 >= 1000 and not selfplay:
                     ts.save_history(fm,save_history,episode+1)
 
         # 学習終了後の後処理
