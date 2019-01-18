@@ -253,9 +253,187 @@ class DQN:
 
         fn = './log/' + fm + '/images/model_loss_and_accuracy/model_loss_and_accuracy_' + str(epoch) + '.png'
         plt.savefig(fn)
-        plt.close()
+        plt.close()     
 
-    def selfPlay(fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info,actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four):
+
+class ER_Memory:
+    def __init__(self, max_size=1000):
+        self.buffer = deque(maxlen=max_size)
+
+    def add(self, experience):
+        self.buffer.append(experience)
+
+    def sample(self, batch_size):
+        samp = np.random.choice(np.arange(len(self.buffer)), size=batch_size, replace=False)
+        return [self.buffer[i] for i in samp]
+
+    def len(self):
+        return len(self.buffer)
+
+class History_Memory:
+    def __init__(self, max_size=5):
+        self.buffer = deque(maxlen=max_size)
+
+    def add(self, experience):
+        self.buffer.append(experience)
+
+    def sample(self):
+        return [self.buffer[i] for i in range(3, -1, -1)]
+
+    def len(self):
+        return len(self.buffer)
+
+class Actor:
+    def __init__(self,exploration_step,init_er_size,epsilon=None):
+        self.init_epsilon = 1.0
+        self.final_epsilon = 0.1
+        self.steps = exploration_step
+        self.init_er_size = init_er_size
+        self.epsilon_step = (self.init_epsilon - self.final_epsilon) / self.steps
+        if epsilon is None:
+            self.epsilon = self.init_epsilon
+        else:
+            self.epsilon = epsilon
+
+    def get_action(self, env, usr, state, mainQN, episode, selfPlay):
+        # ε-greedy法
+        epsilon = self.epsilon
+        action = 0
+
+        if epsilon <= np.random.uniform(0, 1) or selfPlay:
+            predict = mainQN.model.predict(state)[0]
+            action = np.argmax(predict)
+        elif epsilon > np.random.uniform(0, 1) or episode < self.init_er_size:
+            action = np.random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+
+        on,coor,ac,di=env.deciAction(usr,action) # on = OK,NO,HOLD / coor = coordinate[y(row),x(column)]
+
+        if episode >= self.init_er_size:
+            self.epsilon -= self.epsilon_step
+            if self.epsilon < self.final_epsilon:
+                self.epsilon = self.final_epsilon
+
+        return on,coor,action,ac,di
+
+def getOthers(env,obs,turn):
+    obs_f = obs[0]
+    obs_e = obs[1]
+    our_coordinate = []
+    my1 = [] 
+    my2 = []
+    enemy_coordinate = []
+    for i in range(11):
+        a = []
+        b = []
+        c = []
+        d = []
+        for j in range(8):
+            c.append(0)
+            d.append(1)
+            if obs_f[0] == [i,j] or obs_f[1] == [i,j]:
+                a.append(1)
+            else:
+                a.append(0)
+            if obs_e[0] == [i,j] or obs_e[1] == [i,j]:
+                b.append(1)
+            else:
+                b.append(0)
+        my1.append(c) # all 0
+        my2.append(d) # all 1
+        our_coordinate.append(a)
+        enemy_coordinate.append(b)
+
+    my_type = [my1,my2] # all 0 is "usr1", all 1 is "usr2"
+    turn_image = []
+    s = np.digitize(turn, bins=bins(1, 40, 8))
+    for i in range(11):
+        if i < s+1:
+            ka = [1,1,1,1,1,1,1,1]
+        else:
+            ka = [0,0,0,0,0,0,0,0]
+        turn_image.append(ka)
+    
+    ret = [my_type,our_coordinate,enemy_coordinate,turn_image]
+
+    return ret
+           
+def bins(clip_min, clip_max, num):
+    return np.linspace(clip_min, clip_max, num + 1)[1:-1]
+
+def getState(env,i,POINTFIELD,user_field,memory_flame_1,memory_flame_2,info,observation,ob_f,ob_e):
+    ret_state = []
+    others = getOthers(env,observation,i+1)
+    for usr in range(1,3):
+        if usr == 1:
+            if i!=0:
+                memory_flame_1.add(user_field)
+            elif i==0:
+                for j in range(4):
+                    memory_flame_1.add(user_field)
+        state = []
+        state.append(POINTFIELD)
+        user_field_history = memory_flame_1.sample()
+        for j in range(4):
+            state.append(user_field_history[j][0]) # 4フレーム分uf_fieldをappend
+        for j in range(4):
+            state.append(user_field_history[j][1]) # 4フレーム分のue_fieldをappend
+        if not info:
+            for j in range(4):
+                if j == 0:
+                    if usr == 1:
+                        state.append(others[j][0])
+                    elif usr == 2:
+                        state.append(others[j][1])
+                else:
+                    state.append(others[j])
+            state = [state]
+        else:
+            state = [state]
+            if usr == 1:
+                others = [1,ob_f[0],ob_f[1],ob_e[0],ob_e[1],i+1]
+            elif usr == 2:
+                others = [2,ob_f[0],ob_f[1],ob_e[0],ob_e[1],i+1]
+            state.append(others)
+        ret_state.append(state)
+
+    for usr in range(3,5):
+        u_field_f = [user_field[1],user_field[0]]
+        if usr == 3:
+            if i!=0:
+                memory_flame_2.add(u_field_f)
+            elif i==0:
+                for j in range(4):
+                    memory_flame_2.add(u_field_f)
+        state = []
+        state.append(POINTFIELD)
+        user_field_history = memory_flame_2.sample()
+        for j in range(4):
+            state.append(user_field_history[j][0]) # 4フレーム分uf_fieldをappend
+        for j in range(4):
+            state.append(user_field_history[j][1]) # 4フレーム分のue_fieldをappend
+        if not info:
+            o = [others[0],others[2],others[1],others[3]]
+            for j in range(4):
+                if j == 0:
+                    if usr == 3:
+                        state.append(o[j][0])
+                    elif usr == 4:
+                        state.append(o[j][1])
+                else:
+                    state.append(o[j])
+            state = [state]
+        else:
+            state = [state]
+            if usr == 3:
+                others = [3,ob_e[0],ob_e[1],ob_f[0],ob_f[1],i+1]
+            elif usr == 4:
+                others = [4,ob_e[0],ob_e[1],ob_f[0],ob_f[1],i+1]
+            state.append(others)
+        ret_state.append(state)
+     
+    return ret_state,memory_flame_1,memory_flame_2
+
+def selfPlay(fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,info,actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four):
         print("selfplay : %d/100" %slp_num)
         selfplay = True
         Win_latest = 0
@@ -278,7 +456,7 @@ class DQN:
             POINTFIELD = p_field
 
             user_field = [uf_field,ue_field]
-            state,memory_flame1_1,memory_flame1_2 = self.getState(env,0,POINTFIELD,user_field,memory_flame1_1,memory_flame1_2,info,observation,ob_f,ob_e)
+            state,memory_flame1_1,memory_flame1_2 = getState(env,0,POINTFIELD,user_field,memory_flame1_1,memory_flame1_2,info,observation,ob_f,ob_e)
 
             state_f = [state[0],state[1]]
             state_e = [state[2],state[3]]
@@ -466,7 +644,7 @@ class DQN:
                 # 新状態の取得 dqn
                 p_field,uf_field,ue_field = env.getStatus_dqn(i+1)
                 next_user_field = [uf_field,ue_field]
-                next_state,memory_flame1_1,memory_flame1_2 = self.getState(env,i+1,POINTFIELD,next_user_field,memory_flame1_1,memory_flame1_2,info,next_observation,next_ob_f,next_ob_e)
+                next_state,memory_flame1_1,memory_flame1_2 = getState(env,i+1,POINTFIELD,next_user_field,memory_flame1_1,memory_flame1_2,info,next_observation,next_ob_f,next_ob_e)
 
                 # 状態の保存
                 memory_state_1.add((state_f, action_f, reward_f, [next_state[0],next_state[1]]))
@@ -512,191 +690,3 @@ class DQN:
             elif Win_latest == Win_old:
                 win = np.random.choice([0,1])
         return memory_flame1_1,memory_flame1_2,memory_state_1,memory_state_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win
-        
-
-
-
-
-class ER_Memory:
-    def __init__(self, max_size=1000):
-        self.buffer = deque(maxlen=max_size)
-
-    def add(self, experience):
-        self.buffer.append(experience)
-
-    def sample(self, batch_size):
-        samp = np.random.choice(np.arange(len(self.buffer)), size=batch_size, replace=False)
-        return [self.buffer[i] for i in samp]
-
-    def len(self):
-        return len(self.buffer)
-
-class History_Memory:
-    def __init__(self, max_size=5):
-        self.buffer = deque(maxlen=max_size)
-
-    def add(self, experience):
-        self.buffer.append(experience)
-
-    def sample(self):
-        return [self.buffer[i] for i in range(3, -1, -1)]
-
-    def len(self):
-        return len(self.buffer)
-
-class Actor:
-    def __init__(self,exploration_step,init_er_size,epsilon=None):
-        self.init_epsilon = 1.0
-        self.final_epsilon = 0.1
-        self.steps = exploration_step
-        self.init_er_size = init_er_size
-        self.epsilon_step = (self.init_epsilon - self.final_epsilon) / self.steps
-        if epsilon is None:
-            self.epsilon = self.init_epsilon
-        else:
-            self.epsilon = epsilon
-
-    def get_action(self, env, usr, state, mainQN, episode, selfPlay):
-        # ε-greedy法
-        epsilon = self.epsilon
-        action = 0
-
-        if epsilon <= np.random.uniform(0, 1) or selfPlay:
-            predict = mainQN.model.predict(state)[0]
-            action = np.argmax(predict)
-        elif epsilon > np.random.uniform(0, 1) or episode < self.init_er_size:
-            action = np.random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-
-        on,coor,ac,di=env.deciAction(usr,action) # on = OK,NO,HOLD / coor = coordinate[y(row),x(column)]
-
-        if episode >= self.init_er_size:
-            self.epsilon -= self.epsilon_step
-            if self.epsilon < self.final_epsilon:
-                self.epsilon = self.final_epsilon
-
-        return on,coor,action,ac,di
-
-def getOthers(env,obs,turn):
-    obs_f = obs[0]
-    obs_e = obs[1]
-    our_coordinate = []
-    my1 = [] 
-    my2 = []
-    enemy_coordinate = []
-    for i in range(11):
-        a = []
-        b = []
-        c = []
-        d = []
-        for j in range(8):
-            c.append(0)
-            d.append(1)
-            if obs_f[0] == [i,j] or obs_f[1] == [i,j]:
-                a.append(1)
-            else:
-                a.append(0)
-            if obs_e[0] == [i,j] or obs_e[1] == [i,j]:
-                b.append(1)
-            else:
-                b.append(0)
-        my1.append(c) # all 0
-        my2.append(d) # all 1
-        our_coordinate.append(a)
-        enemy_coordinate.append(b)
-
-    my_type = [my1,my2] # all 0 is "usr1", all 1 is "usr2"
-    turn_image = []
-    s = np.digitize(turn, bins=bins(1, 40, 8))
-    for i in range(11):
-        if i < s+1:
-            ka = [1,1,1,1,1,1,1,1]
-        else:
-            ka = [0,0,0,0,0,0,0,0]
-        turn_image.append(ka)
-    
-    ret = [my_type,our_coordinate,enemy_coordinate,turn_image]
-
-    return ret
-           
-def bins(clip_min, clip_max, num):
-    return np.linspace(clip_min, clip_max, num + 1)[1:-1]
-
-def getState(env,i,POINTFIELD,user_field,memory_flame_1,memory_flame_2,info,observation,ob_f,ob_e):
-    ret_state = []
-    others = getOthers(env,observation,i+1)
-    for usr in range(1,3):
-        if usr == 1:
-            if i!=0:
-                memory_flame_1.add(user_field)
-            elif i==0:
-                for j in range(4):
-                    memory_flame_1.add(user_field)
-        state = []
-        state.append(POINTFIELD)
-        user_field_history = memory_flame_1.sample()
-        for j in range(4):
-            state.append(user_field_history[j][0]) # 4フレーム分uf_fieldをappend
-        for j in range(4):
-            state.append(user_field_history[j][1]) # 4フレーム分のue_fieldをappend
-        if not info:
-            for j in range(4):
-                if j == 0:
-                    if usr == 1:
-                        state.append(others[j][0])
-                    elif usr == 2:
-                        state.append(others[j][1])
-                else:
-                    state.append(others[j])
-            state = [state]
-        else:
-            state = [state]
-            if usr == 1:
-                others = [1,ob_f[0],ob_f[1],ob_e[0],ob_e[1],i+1]
-            elif usr == 2:
-                others = [2,ob_f[0],ob_f[1],ob_e[0],ob_e[1],i+1]
-            state.append(others)
-        ret_state.append(state)
-
-    for usr in range(3,5):
-        u_field_f = [user_field[1],user_field[0]]
-        if usr == 3:
-            if i!=0:
-                memory_flame_2.add(u_field_f)
-            elif i==0:
-                for j in range(4):
-                    memory_flame_2.add(u_field_f)
-        state = []
-        state.append(POINTFIELD)
-        user_field_history = memory_flame_2.sample()
-        for j in range(4):
-            state.append(user_field_history[j][0]) # 4フレーム分uf_fieldをappend
-        for j in range(4):
-            state.append(user_field_history[j][1]) # 4フレーム分のue_fieldをappend
-        if not info:
-            o = [others[0],others[2],others[1],others[3]]
-            for j in range(4):
-                if j == 0:
-                    if usr == 3:
-                        state.append(o[j][0])
-                    elif usr == 4:
-                        state.append(o[j][1])
-                else:
-                    state.append(o[j])
-            state = [state]
-        else:
-            state = [state]
-            if usr == 3:
-                others = [3,ob_e[0],ob_e[1],ob_f[0],ob_f[1],i+1]
-            elif usr == 4:
-                others = [4,ob_e[0],ob_e[1],ob_f[0],ob_f[1],i+1]
-            state.append(others)
-        ret_state.append(state)
-     
-    return ret_state,memory_flame_1,memory_flame_2
-"""
-if __name__ == "__main__":
-    palam = [[32,64],[3,3],['relu','relu','relu','relu','softmax'],[2,2],[1,11,8],128,17,'mean_squared_error','adam']
-    palameter = [palam, palam, palam, palam, palam, palam, palam, palam, palam, palam]
-    dnn = DQN("CNN",palam,1)
-"""
-
