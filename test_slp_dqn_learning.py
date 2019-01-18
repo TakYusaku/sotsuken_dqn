@@ -431,12 +431,13 @@ if __name__ == '__main__':
             s[5].append(s_p[5])
             s_avg[5].append(mean(s[5]))
 
-            avg_save_history[2][0].append(mean(avg_save_history[0][0]))
-            avg_save_history[2][1].append(mean(avg_save_history[0][1]))
-            avg_save_history[3][0].append(mean(avg_save_history[1][0]))
-            avg_save_history[3][1].append(mean(avg_save_history[1][1]))
-            avg_save_history[0] = [[],[]]
-            avg_save_history[1] = [[],[]]
+            if episode+1 > 5:
+                avg_save_history[2][0].append(mean(avg_save_history[0][0]))
+                avg_save_history[2][1].append(mean(avg_save_history[0][1]))
+                avg_save_history[3][0].append(mean(avg_save_history[1][0]))
+                avg_save_history[3][1].append(mean(avg_save_history[1][1]))
+                avg_save_history[0] = [[],[]]
+                avg_save_history[1] = [[],[]]
 
             if env.judVoL() == "Win_1":
                 Win1 += 1

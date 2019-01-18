@@ -471,7 +471,7 @@ def saveWPCT(fm,WPCT_LATEST,cnt):
     plt.figure()
     plt.plot(WPCT, 'r', label="WPCT of latest")
     plt.xlim(0, cnt)
-    plt.ylim(min(WPCT_LATEST)-1, max(WPCT_LATEST)+1))
+    plt.ylim(min(WPCT_LATEST)-1, max(WPCT_LATEST)+1)
     plt.xlabel("number of selfplay")
     plt.ylabel("WPCT")
     plt.legend(loc='lower right')
