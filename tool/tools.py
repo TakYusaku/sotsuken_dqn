@@ -17,6 +17,10 @@ def init_func(fm):
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/nn_weight'
     os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/nn_weight/main_os'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/nn_weight/target_os'
+    os.mkdir(mkdi)
     mkdi = './log/' + fm + '/nn_weight/main_n1'
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/nn_weight/main_n2'
