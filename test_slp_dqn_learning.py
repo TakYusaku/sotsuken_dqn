@@ -564,7 +564,6 @@ if __name__ == '__main__':
         target_os.save_weight(fm,num_episode,'target_os')
 
         print(np.array(avg_save_history[2:]).shape)
-        print(len(avg_save_history[0][0]))
         print(np.array(save_history).shape)
 
         dqn.saveHistory(fm,num_episode,[save_history,avg_save_history[2:]],'loss_acc')
