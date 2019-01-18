@@ -120,28 +120,15 @@ def main():
     X_train, y_train = common2.convertCNNInput(X_train, y_train)
     X_test, y_test = common2.convertCNNInput(X_test, y_test)
 
+    print(X_test.shape)
+    print(y_test.shape)
     print(X_train.shape)
-    print(type(X_train))
+    print(y_train.shape)
     ## 学習回数
     max_epochs = 15
 
     model = CNN()
 
-    l = [8,9]
-    a = np.array(l)
-    print(a.shape)
-    l = [[8,9],[8,9]]
-    a = np.array(l)
-    print(a.shape)
-    l = [[[8,9],[8,9]]]
-    a = np.array(l)
-    print(a.shape)
-    l = [[[[8,9],[8,9]]]]
-    a = np.array(l)
-    print(a.shape)
-
-
-    print
     
     """
     model.fit(X_train, y_train, max_epochs)

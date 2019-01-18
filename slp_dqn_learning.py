@@ -534,7 +534,7 @@ if __name__ == '__main__':
         ts.Log(fm,"error",info_error)
         print(m)
         ###
-        fn = './log/' + fm + '/'
+        fn = './log/' + fm + '/error'
         with open(fn, 'a') as f:
             traceback.print_exc(file=f)
         ###
