@@ -563,6 +563,9 @@ if __name__ == '__main__':
         main_os.save_weight(fm,num_episode,'main_os')
         target_os.save_weight(fm,num_episode,'target_os')
 
+        print(np.array(avg_save_history).shape)
+        print(np.array(save_history).shape)
+
         dqn.saveHistory(fm,num_episode,[save_history,avg_save_history[2:]],'loss_acc')
         dqn.saveHistory(fm,num_episode,[WPCT_LATEST,TSUYOKUNATTA],'WPCT_LATEST_and_TSUYOKUNATTA')
 
@@ -603,7 +606,7 @@ if __name__ == '__main__':
         target_n_2.save_weight(fm,kari_epi,'target_n2')
         main_os.save_weight(fm,kari_epi,'main_os')
         target_os.save_weight(fm,kari_epi,'target_os')
-        if kari_epi > 500:
+        if kari_epi > 6:
             ts.save_history(fm,save_history,kari_epi*40) ##########
             dqn.saveHistory(fm,kari_epi,[save_history,avg_save_history[2:]],'loss_acc')
             dqn.saveHistory(fm,kari_epi,[WPCT_LATEST,TSUYOKUNATTA],'WPCT_LATEST_and_TSUYOKUNATTA')
