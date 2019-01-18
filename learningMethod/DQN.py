@@ -211,14 +211,11 @@ class DQN:
             targets2[i] = self.model.predict(np.array(state_b[1]))   # Qネットワークの出力
             targets2[i][action_b[1]] = target2             # 教師信号
 
-        self.result = self.model.fit(inputs, targets, epochs=1, verbose=1, batch_size=self.batch_size,validation_data=(inputs, targets)) # verbose=0 は訓練の様子を表示しない
-        self.result = self.model.fit(inputs2, targets2, epochs=1, verbose=1, batch_size=self.batch_size,validation_data=(inputs2, targets2)) # verbose=0 は訓練の様子を表示しない
-        self.history = self.result.history
-        print(self.history)
-        print(type(self.history))
-        print(self.result)
-        print(type(self.result))
-        return self.result
+        self.result1 = self.model.fit(inputs, targets, epochs=1, verbose=1, batch_size=self.batch_size,validation_data=(inputs, targets)) # verbose=0 は訓練の様子を表示しない
+        self.result2 = self.model.fit(inputs2, targets2, epochs=1, verbose=1, batch_size=self.batch_size,validation_data=(inputs2, targets2)) # verbose=0 は訓練の様子を表示しない
+        self.history1 = self.result1.history
+        self.history2 = self.result2.history
+        return self.history2
     
     def loadWeight(self, fn):
         self.model.load_weights(fn)
@@ -674,14 +671,6 @@ def selfPlay(fm,env,slp_num,main_n_1,main_n_2,target_n_1,target_n_2,memory_flame
         no_counts_four.append(float(no_four/100))
         wins = [Win_latest,Win_old,Win_latest/100,Win_old/100]
         ts.Log(fm,'slp',wins,slp_num)
-        main_n_1.plot_history(fm,i+1,'newest_main')
-        main_n_2.plot_history(fm,i+1,'old_main')
-        target_n_1.plot_history(fm,i+1,'newest_target')
-        target_n_2.plot_history(fm,i+1,'old_main')
-        main_n_1.save_weight(fm,i+1,'newest_main')
-        main_n_2.save_weight(fm,i+1,'old_main')
-        target_n_1.save_weight(fm,i+1,'newest_target')
-        target_n_2.save_weight(fm,i+1,'old_target')
 
         if float(Win_latest/100) >= 0.55:
             win = 1

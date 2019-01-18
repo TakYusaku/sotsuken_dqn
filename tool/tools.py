@@ -45,6 +45,22 @@ def init_func(fm):
     os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/model_loss_and_accuracy'
     os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent1'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent2'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/avg'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent1'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent2'
+    os.mkdir(mkdi)
+    mkdi = './log/' + fm + '/images/model_loss_and_accuracy/loss/avg'
+    os.mkdir(mkdi)
     mkdi = './log/' + fm + '/images/no_counts'
     os.mkdir(mkdi)
     """
@@ -353,6 +369,116 @@ def saveImage(fm,result,episode):
     fn7 = './log/' + fm + '/images/result_reward/avg_sum_totalreward/avg_sum_totalreward_' + str(episode) + '.png'
     plt.savefig(fn7)
     plt.close()
+
+def save_history(fm,save_history,episode):
+    # history of agent1 acc
+    plt.figure()
+    plt.plot(save_history[0][0], 'r', label="acc of agent1")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[0][0]))-1, max(max(save_history[0][0])+1))
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy of agent1")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn8 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent1/acc_agent1_' + str(episode) + '.png'
+    plt.savefig(fn8)
+    plt.close()
+
+    # history of agent2 acc
+    plt.figure()
+    plt.plot(save_history[1][0], 'b', label="acc of agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[1][0]))-1, max(max(save_history[1][0]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy of agent2")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn9 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/agent2/acc_agent2_' + str(episode) + '.png'
+    plt.savefig(fn9)
+    plt.close()
+
+    # history of agent1 and agent2 acc
+    plt.figure()
+    plt.plot(save_history[0][0], 'r', label="acc of agent1")
+    plt.plot(save_history[1][0], 'b', label="acc of agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[0][0]),min(save_history[1][0]))-1, max(max(save_history[0][0]),max(save_history[1][0]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn10 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/acc_' + str(episode) + '.png'
+    plt.savefig(fn10)
+    plt.close()
+
+    # history of agent1 loss
+    plt.figure()
+    plt.plot(save_history[0][1], 'r', label="loss of agent1")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[0][1]))-1, max(max(save_history[0][1])+1))
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy of agent1")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn11 = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent1/loss_agent1_' + str(episode) + '.png'
+    plt.savefig(fn11)
+    plt.close()
+
+    # history of agent2 loss
+    plt.figure()
+    plt.plot(save_history[1][1], 'b', label="loss of agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[1][1]))-1, max(max(save_history[1][1]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy of agent2")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn12 = './log/' + fm + '/images/model_loss_and_accuracy/loss/agent2/loss_agent2_' + str(episode) + '.png'
+    plt.savefig(fn12)
+    plt.close()
+
+    # history of agent1 and agent2 loss
+    plt.figure()
+    plt.plot(save_history[0][1], 'r', label="loss of agent1")
+    plt.plot(save_history[1][1], 'b', label="loss of agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[0][1]),min(save_history[1][1]))-1, max(max(save_history[0][1]),max(save_history[1][1]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn13 = './log/' + fm + '/images/model_loss_and_accuracy/loss/loss_' + str(episode) + '.png'
+    plt.savefig(fn13)
+    plt.close()
+
+    # history of agent1 and agent2 avg acc
+    plt.figure()
+    plt.plot(save_history[2][0], 'r', label="acc of agent1")
+    plt.plot(save_history[3][0], 'b', label="acc of agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[2][0]),min(save_history[3][0]))-1, max(max(save_history[2][0]),max(save_history[3][0]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("accuracy")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn14 = './log/' + fm + '/images/model_loss_and_accuracy/accuracy/avg/acc_avg_' + str(episode) + '.png'
+    plt.savefig(fn14)
+    plt.close()
+
+    # history of agent1 and agent2 avg loss
+    plt.figure()
+    plt.plot(save_history[2][1], 'r', label="loss of agent1")
+    plt.plot(save_history[3][1], 'b', label="loss of agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(save_history[2][1]),min(save_history[3][1]))-1, max(max(save_history[2][1]),max(save_history[3][1]))+1)
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    fn15 = './log/' + fm + '/images/model_loss_and_accuracy/loss/avg/loss_avg_' + str(episode) + '.png'
+    plt.savefig(fn15)
+    plt.close()
+
 
 def saveImage_nocounts(fm,nocounts,episode):
     fn = './log/' + fm + '/images/no_counts/' + str(episode) + '_nocounts.png'

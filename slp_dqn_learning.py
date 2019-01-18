@@ -56,6 +56,8 @@ if __name__ == '__main__':
     avg_save_avg_totalrewardF = []
     avg_save_sum_totalrewardF = []
 
+    save_history = [[[],[]],[[],[]],[[],[]],[[],[]]] ###$$$$$$$$
+
     save_1 = [save_episodereward1,save_episodereward2,save_avg_totalrewardF,save_sum_totalrewardF,avg_save_episodereward1,avg_save_episodereward2,avg_save_avg_totalrewardF,avg_save_sum_totalrewardF]
     save_2 = [save_episodereward1,save_episodereward2,save_avg_totalrewardF,save_sum_totalrewardF,avg_save_episodereward1,avg_save_episodereward2,avg_save_avg_totalrewardF,avg_save_sum_totalrewardF]
 
@@ -411,8 +413,9 @@ if __name__ == '__main__':
                 memory_state_2.add((state_e, action_e, reward_e, [next_state[2],next_state[3]]))
 
                 if episode*40 >= 500*40 and not selfplay:
-                    main_n_1.fitting(memory_state_1, gamma, target_n_1)
-                    main_n_2.fitting(memory_state_2, gamma, target_n_2)
+                    hist1,hist2 = main_n_1.fitting(memory_state_1, gamma, target_n_1)
+                    save_history[0][0].append(hist['acc'])
+                    hist3,hist4 = main_n_2.fitting(memory_state_2, gamma, target_n_2)
                 
                 if DQN_mode:
                     target_n_1.model.set_weights(main_n_1.model.get_weights())
