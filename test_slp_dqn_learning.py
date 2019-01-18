@@ -92,7 +92,6 @@ if __name__ == '__main__':
 
 ### -------- init DQN player 1 --------
     main_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-"""
     target_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
     memory_state_1 = dqn.ER_Memory(max_size=init_er_memory)
     memory_flame1_1 = dqn.History_Memory(max_size=4)
@@ -572,4 +571,3 @@ if __name__ == '__main__':
         main_os.save_weight(fm,kari_epi,'main_os')
         target_os.save_weight(fm,kari_epi,'target_os')
         ts.save_history(fm,save_history,kari_epi)
-"""
