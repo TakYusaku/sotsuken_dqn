@@ -109,9 +109,9 @@ if __name__ == '__main__':
 
     observation, terns = env.reset(info[0])
     fn1 = './log/20190118_155853/nn_weight/main_n1/main_n1_weight_10502.hd5'
-    main_n_1.model.loadWeight(fn1)
+    main_n_1.loadWeight(fn1)
     fn2 = './log/20190118_155853/nn_weight/target_n1/target_n1_weight_10502.hd5'
-    target_n_1.model.loadWeight(fn2)
+    target_n_1.loadWeight(fn2)
 
     for i in range(11):
         m = ''
@@ -119,14 +119,14 @@ if __name__ == '__main__':
         if i+1 != 5:
             if i+1 == 11:
                 fn3 = './log/20190118_155853/nn_weight/main_os/main_os_weight_10502.hd5'
-                main_n_1.model.loadWeight(fn3)
+                main_n_1.loadWeight(fn3)
                 fn4 = './log/20190118_155853/nn_weight/target_os/target_os_weight_10502.hd5'
-                target_n_1.model.loadWeight(fn4)
+                target_n_1.loadWeight(fn4)
             else:
                 fn3 = './log/20190118_155853/nn_weight/main_os/main_os_weight_' + str(i+1) + '.hd5'
-                main_n_1.model.loadWeight(fn3)
+                main_n_1.loadWeight(fn3)
                 fn4 = './log/20190118_155853/nn_weight/target_os/target_os_weight_' + str(i+1) + '.hd5'
-                target_n_1.model.loadWeight(fn4)
+                target_n_1.loadWeight(fn4)
 
             memory_flame1_1,memory_flame1_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win,wpct_latest = dqn.valid_selfPlay(fm,env,cnt,main_new,main_os,target_new,target_os,memory_flame1_1,memory_flame1_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
             if win:
