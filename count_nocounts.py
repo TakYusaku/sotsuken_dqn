@@ -97,26 +97,74 @@ if __name__ == '__main__':
 ### -------- init DQN player 1 --------
     main_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
     target_n_1 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-    memory_state_1 = dqn.ER_Memory(max_size=init_er_memory)
     memory_flame1_1 = dqn.History_Memory(max_size=4)
-    #memory_flame2 = dqn.History_Memory(max_size=4)
-    actor_1 = dqn.Actor(120000,500)
-
-### -------- init DQN player2 --------
-    main_n_2 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-    target_n_2 = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
-    memory_state_2 = dqn.ER_Memory(max_size=init_er_memory)
     memory_flame1_2 = dqn.History_Memory(max_size=4)
-    #memory_flame2 = dqn.History_Memory(max_size=4)
+    actor_1 = dqn.Actor(120000,500)
     actor_2 = dqn.Actor(120000,500)
 
 ### -------- init DQN old -------- os is old and strong
     main_os = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
     target_os = dqn.DQN("CNN",info_dqn,palam_cnn,palam_dense)
 
+
+    observation, terns = env.reset(info[0])
+    fn1 = './log/20190118_155853/nn_weight/main_n1/main_n1_weight_10502.hd5'
+    main_n_1.model.loadWeight(fn1)
+    fn2 = './log/20190118_155853/nn_weight/target_n1/target_n1_weight_10502.hd5'
+    target_n_1.model.loadWeight(fn2)
+
+    for i in range(11):
+        m = ''
+        m += str(cnt) + ' : '
+        if i+1 != 5:
+            if i+1 == 11:
+                fn3 = './log/20190118_155853/nn_weight/main_os/main_os_weight_10502.hd5'
+                main_n_1.model.loadWeight(fn3)
+                fn4 = './log/20190118_155853/nn_weight/target_os/target_os_weight_10502.hd5'
+                target_n_1.model.loadWeight(fn4)
+            else:
+                fn3 = './log/20190118_155853/nn_weight/main_os/main_os_weight_' + str(i+1) + '.hd5'
+                main_n_1.model.loadWeight(fn3)
+                fn4 = './log/20190118_155853/nn_weight/target_os/target_os_weight_' + str(i+1) + '.hd5'
+                target_n_1.model.loadWeight(fn4)
+
+            memory_flame1_1,memory_flame1_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four,win,wpct_latest = dqn.valid_selfPlay(fm,env,cnt,main_new,main_os,target_new,target_os,memory_flame1_1,memory_flame1_2,info[4],actor_1,actor_2,no_counts_one,no_counts_two,no_counts_three,no_counts_four)
+            if win:
+                tsuyokunatta += 1
+                TSUYOKUNATTA.append(cnt)
+                m += 'latest_won, '                      
+            else:
+                m += 'latest_lose, '
+
+            m += (str(wpct_latest) + '_latest\n')
+            ts.Log(fm,'slp_f',m,cnt)
+            WPCT_LATEST.append(wpct_latest)
+            cnt += 1
+        elif i+1 == 5:
+            cnt += 1
+        
+    ts.saveWPCT(fm,WPCT_LATEST,cnt)
+    #dqn.saveHistory(fm,num_episode,[save_history,avg_save_history[2:]],'loss_acc')
+    dqn.saveHistory(fm,10,[WPCT_LATEST,TSUYOKUNATTA],'WPCT_LATEST_and_TSUYOKUNATTA')
+    total_no_counts.append(no_counts_one)
+    total_no_counts.append(no_counts_two)
+    total_no_counts.append(no_counts_three)
+    total_no_counts.append(no_counts_four)
+    no_counts_one_two = []
+    no_counts_three_four = []
+    for j in range(len(no_counts_one)):
+        no_counts_one_two.append(float((no_counts_one[j]+no_counts_two[j])/2))
+        no_counts_three_four.append(float((no_counts_three[j]+no_counts_four[j])/2))
+
+    total_no_counts.append(no_counts_one_two)
+    total_no_counts.append(no_counts_three_four)
+    ts.saveImage_nocounts(fm,total_no_counts,len(no_counts_one))
+    dqn.saveHistory(fm,10,[total_no_counts],'total_no_counts')
+
+"""
     try:
         #
-        for episode in range(15):#num_episode):
+        for episode in range(num_episode):
         #
             # now epoch　の記録
             kari_epi += 1
@@ -352,7 +400,7 @@ if __name__ == '__main__':
                 memory_state_1.add((state_f, action_f, reward_f, [next_state[0],next_state[1]]))
                 memory_state_2.add((state_e, action_e, reward_e, [next_state[2],next_state[3]]))
                 #
-                if episode+1 > 5:#(episode+1)*40 >= 500*40 and not selfplay:
+                if (episode+1) > 500 and not selfplay:
                 #
                     hist2 = main_n_1.fitting(memory_state_1, gamma, target_n_1)
                     hist4 = main_n_2.fitting(memory_state_2, gamma, target_n_2)
@@ -431,7 +479,7 @@ if __name__ == '__main__':
             s[5].append(s_p[5])
             s_avg[5].append(mean(s[5]))
 
-            if episode+1 > 5:
+            if episode+1 > 500:
                 avg_save_history[2][0].append(mean(avg_save_history[0][0]))
                 avg_save_history[2][1].append(mean(avg_save_history[0][1]))
                 avg_save_history[3][0].append(mean(avg_save_history[1][0]))
@@ -450,7 +498,7 @@ if __name__ == '__main__':
             
             # selfplay 1000回毎に100試合をネットワークだけで対戦させてみる.
             #
-            if episode+1 == 10 or episode+1 == 15:#(episode+1) == (500+1000*cnt):
+            if (episode+1) == (500+1000*cnt):
             #
                 m = ''
                 if cnt == 1:
@@ -518,18 +566,17 @@ if __name__ == '__main__':
                 cnt += 1
 
             #
-            if episode != 0 and episode!=num_episode-1 and (episode+1)%1 == 0: #(episode+1)%500 == 0:
+            if episode != 0 and episode!=num_episode-1 and (episode+1)%500 == 0:
             #
                 info_epoch = [epi_processtime[episode],float(Win1/(episode+1)),float(Win2/(episode+1)),np.argmax(np.array(save_1[2])),save_1[2][np.argmax(np.array(save_1[2]))],np.argmax(np.array(save_2[2])),save_2[2][np.argmax(np.array(save_2[2]))]]
                 ts.Log(fm,"now learning",info_epoch,episode+1)
                 result = [s,s_avg,save_1,save_2]
                 ts.saveImage(fm,result,episode+1)
                 #
-                if episode+1 >= 6 and not selfplay:#episode+1 >= 1000 and not selfplay:
+                if episode+1 > 1000 and not selfplay:
                 #
-                    ts.save_history(fm,save_history,(episode-5+1)) #
-                    ts.save_history(fm,save_history,(episode+1-5)*41) #
-                    ts.avg_save_history(fm,avg_save_history[2:],(episode-6+1)) #
+                    ts.save_history(fm,save_history,(episode+1-500)*40) #
+                    ts.avg_save_history(fm,avg_save_history[2:],(episode-500+1)) #
 
         # 学習終了後の後処理
         le_delta,fs,now = ts.getTime("timestamp_on",le_start) # 総実行時間の記録
@@ -611,3 +658,4 @@ if __name__ == '__main__':
             ts.Log(fm,"TSUYOKUNATTA",TSUYOKUNATTA)
         else:
             pass
+"""

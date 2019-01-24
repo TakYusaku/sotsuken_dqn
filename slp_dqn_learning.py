@@ -513,8 +513,9 @@ if __name__ == '__main__':
                 ts.Log(fm,'slp_f',m,cnt)
                 win_one = 0
                 win_two = 0
-                cnt += 1
                 WPCT_LATEST.append(wpct_latest)
+                ts.saveWPCT(fm,WPCT_LATEST,cnt)
+                cnt += 1
 
             #
             if episode != 0 and episode!=num_episode-1 and (episode+1)%500 == 0:

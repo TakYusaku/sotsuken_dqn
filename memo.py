@@ -1,8 +1,7 @@
-#sp = [1500,2600,3700,4800,5900,7000,8100,9200,10300,11400] # episode = 11500
-sp = [0,1,1499,2599,3699,4799,5899,6999,8099,9199,10299,11399]
-cnt = 1
-for i in range(115000):
-    if (i+1) == (400+1100*cnt):
-        print(cnt)
-        print("True : %d" %(i+1))
-        cnt += 1
+import numpy as np
+def bins(clip_min, clip_max, num):
+    return np.linspace(clip_min, clip_max, num + 1)[1:-1]
+
+for turn in range(40):
+    s = np.digitize(turn, bins=bins(1, 40, 8))
+    print("%d,%e"%(turn,s))

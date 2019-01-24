@@ -454,18 +454,31 @@ def avg_save_history(fm,save_history,episode):
 def saveImage_nocounts(fm,nocounts,episode):
     fn = './log/' + fm + '/images/no_counts/' + str(episode) + '_nocounts.png'
     plt.figure()
-    plt.plot(nocounts[0], 'r', label="agent1")
-    plt.plot(nocounts[1], 'b', label="agent2")
-    plt.plot(nocounts[2], 'g', label="agent3")
-    plt.plot(nocounts[3], 'm', label="agent4")
+    plt.plot(nocounts[0], 'r', label="agent1_1")
+    plt.plot(nocounts[1], 'b', label="agent1_2")
+    plt.plot(nocounts[2], 'g', label="agent2_1")
+    plt.plot(nocounts[3], 'm', label="agent2_2")
     plt.xlim(0, episode)
-    plt.ylim(min(min(nocounts[1]),min(nocounts[0]),min(min(nocounts[2]),min(nocounts[3]))-50, max(max(nocounts[3]),max(nocounts[2]),max(nocounts[1]),max(nocounts[0]))+50))
+    plt.ylim(min(min(nocounts[1]),min(nocounts[0]),min(min(nocounts[2]),min(nocounts[3]))-5, max(max(nocounts[3]),max(nocounts[2]),max(nocounts[1]),max(nocounts[0]))+5))
     plt.xlabel("epoch")
     plt.ylabel("number of 'NO' counts")
     plt.legend(loc='lower right')
     #plt.xscale('log')
     plt.savefig(fn)
     plt.close()
+
+    fn = './log/' + fm + '/images/no_counts/' + str(episode) + '_nocounts_1_2.png'
+    plt.figure()
+    plt.plot(nocounts[4], 'r', label="agent1")
+    plt.plot(nocounts[5], 'b', label="agent2")
+    plt.xlim(0, episode)
+    plt.ylim(min(min(nocounts[4]),min(nocounts[5]))-5, max(max(nocounts[4]),max(nocounts[5]))+5))
+    plt.xlabel("epoch")
+    plt.ylabel("number of 'NO' counts")
+    plt.legend(loc='lower right')
+    #plt.xscale('log')
+    plt.savefig(fn)
+    plt.close()    
 
 def saveWPCT(fm,WPCT_LATEST,cnt):
     plt.figure()
