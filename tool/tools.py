@@ -472,7 +472,7 @@ def saveImage_nocounts(fm,nocounts,episode):
     plt.plot(nocounts[4], 'r', label="agent1")
     plt.plot(nocounts[5], 'b', label="agent2")
     plt.xlim(0, episode)
-    plt.ylim(min(min(nocounts[4]),min(nocounts[5]))-5, max(max(nocounts[4]),max(nocounts[5]))+5))
+    plt.ylim(min(min(nocounts[4]),min(nocounts[5]))-5, max(max(nocounts[4]),max(nocounts[5]))+5)
     plt.xlabel("epoch")
     plt.ylabel("number of 'NO' counts")
     plt.legend(loc='lower right')
